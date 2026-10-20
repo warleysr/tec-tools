@@ -4,8 +4,9 @@
  */
 
 const DEFAULT_CONFIG = {
-  wheelPosition: "bottom-right",
+  wheelPosition: "center",
   wheelTrigger: "button-and-hotkey",
+  showDockPill: false,
   hotkey: "KeyW",
   ankiUrl: "http://127.0.0.1:8765",
   ankiDeck: "TEC Concursos",

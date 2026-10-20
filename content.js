@@ -39,23 +39,22 @@
 
   // Criação dos elementos DOM da extensão
   function injectUI() {
-    // 1. Floating Dock Trigger
+    // 1. Floating Dock Trigger (Apenas ícone, desativado por padrão)
     const dock = document.createElement('div');
     dock.id = 'tec-tools-dock';
-    dock.title = 'TEC-Tools: Wheel Menu (Atalho: Alt+W)';
-    dock.innerHTML = `
-      <div class="tt-dock-icon">${ICONS.wheel}</div>
-      <span class="tt-dock-label">TEC-Tools</span>
-      <span class="tt-dock-badge">Wheel</span>
-    `;
+    dock.title = 'TEC-Tools (Alt+W)';
+    if (!currentConfig || !currentConfig.showDockPill) {
+      dock.classList.add('tt-hidden');
+    }
+    dock.innerHTML = `<div class="tt-dock-icon">${ICONS.wheel}</div>`;
     document.body.appendChild(dock);
 
-    // 2. Wheel Overlay & Radial Donut Menu
+    // 2. Wheel Overlay & Radial Donut Menu (Sempre centralizada)
     const overlay = document.createElement('div');
     overlay.id = 'tec-tools-wheel-overlay';
     overlay.innerHTML = `
       <div id="tec-tools-wheel">
-        <svg class="tt-wheel-svg" viewBox="0 0 250 250">
+        <svg class="tt-wheel-svg" viewBox="0 0 290 290">
           <defs>
             <linearGradient id="ttGradAnki" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="#0071e3" stop-opacity="0.85"/>
@@ -67,14 +66,13 @@
             </linearGradient>
           </defs>
 
-          <!-- Left Slice: Enviar para Anki (Setor esquerdo: 90deg a 270deg) -->
-          <!-- R=120, r=44, centro=125,125. Com pequeno gap angular -->
+          <!-- Left Slice: Enviar para Anki (Setor esquerdo: R=140, r=48, centro=145,145) -->
           <path class="tt-wheel-slice slice-anki" data-action="anki"
-            d="M 122,5 A 120,120 0 0,0 122,245 L 122,169 A 44,44 0 0,1 122,81 Z" />
+            d="M 141,5 A 140,140 0 0,0 141,285 L 141,193 A 48,48 0 0,1 141,97 Z" />
 
-          <!-- Right Slice: Explicar com IA (Setor direito: 270deg a 90deg) -->
+          <!-- Right Slice: Explicar com IA (Setor direito) -->
           <path class="tt-wheel-slice slice-ia" data-action="ia"
-            d="M 128,5 A 120,120 0 0,1 128,245 L 128,169 A 44,44 0 0,0 128,81 Z" />
+            d="M 149,5 A 140,140 0 0,1 149,285 L 149,193 A 48,48 0 0,0 149,97 Z" />
         </svg>
 
         <!-- Slice Content (Left - Anki) -->
@@ -91,10 +89,9 @@
           <span class="tt-wheel-item-desc">Análise didática</span>
         </div>
 
-        <!-- Center Hub -->
-        <div class="tt-wheel-hub" title="Fechar Wheel">
+        <!-- Center Hub (Apenas ícone minimalista, sem corte de texto) -->
+        <div class="tt-wheel-hub" title="Fechar (Esc)">
           <div class="tt-wheel-hub-icon">${ICONS.wheel}</div>
-          <span class="tt-wheel-hub-label">Opções</span>
         </div>
       </div>
     `;
@@ -155,10 +152,10 @@
       lastMousePos.y = e.clientY;
     }, { passive: true });
 
-    // Clique no Dock abre a Wheel
+    // Clique no Dock abre a Wheel centralizada
     dock.addEventListener('click', (e) => {
       e.stopPropagation();
-      openWheel(dock.getBoundingClientRect());
+      openWheel();
     });
 
     // Clique no Hub fecha a Wheel
@@ -182,14 +179,14 @@
       });
     });
 
-    // Atalho global Alt+W para invocar a wheel diretamente no cursor
+    // Atalho global Alt+W para invocar a wheel centralizada na tela
     window.addEventListener('keydown', (e) => {
       if (e.altKey && (e.code === 'KeyW' || e.key.toLowerCase() === 'w')) {
         e.preventDefault();
         if (overlay.classList.contains('tt-visible')) {
           closeWheel();
         } else {
-          openWheelAtCursor(lastMousePos.x, lastMousePos.y);
+          openWheel();
         }
       } else if (e.key === 'Escape') {
         if (overlay.classList.contains('tt-visible')) closeWheel();
@@ -223,35 +220,9 @@
     setupDraggableModal(aiModal);
   }
 
-  // Abre a Wheel centralizada ou ancorada
-  function openWheel(anchorRect) {
-    const wheel = document.getElementById('tec-tools-wheel');
+  // Abre a Wheel sempre centralizada na tela
+  function openWheel() {
     const overlay = document.getElementById('tec-tools-wheel-overlay');
-
-    if (anchorRect) {
-      const x = Math.max(130, Math.min(window.innerWidth - 130, anchorRect.left + anchorRect.width / 2));
-      const y = Math.max(130, Math.min(window.innerHeight - 130, anchorRect.top - 100));
-      wheel.style.left = `${x - 125}px`;
-      wheel.style.top = `${y - 125}px`;
-    } else {
-      wheel.style.left = 'calc(50% - 125px)';
-      wheel.style.top = 'calc(50% - 125px)';
-    }
-
-    // Identifica questão atual antes de abrir
-    activeQuestion = extractCurrentQuestion();
-    overlay.classList.add('tt-visible');
-  }
-
-  function openWheelAtCursor(cx, cy) {
-    const wheel = document.getElementById('tec-tools-wheel');
-    const overlay = document.getElementById('tec-tools-wheel-overlay');
-
-    const x = Math.max(135, Math.min(window.innerWidth - 135, cx));
-    const y = Math.max(135, Math.min(window.innerHeight - 135, cy));
-    wheel.style.left = `${x - 125}px`;
-    wheel.style.top = `${y - 125}px`;
-
     activeQuestion = extractCurrentQuestion();
     overlay.classList.add('tt-visible');
   }

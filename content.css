@@ -19,7 +19,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   Floating Trigger Dock (Apple Pill)
+   Floating Trigger Dock (Apple Circular Icon Button)
    -------------------------------------------------------------------------- */
 #tec-tools-dock {
   position: fixed;
@@ -28,29 +28,34 @@
   z-index: 999998;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 14px 8px 10px;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
   background: var(--tt-glass-bg);
   backdrop-filter: blur(28px) saturate(190%);
   -webkit-backdrop-filter: blur(28px) saturate(190%);
   border: 1px solid var(--tt-glass-border);
-  border-radius: 999px;
+  border-radius: 50%;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32), inset 0 1px 1px rgba(255, 255, 255, 0.2);
   cursor: pointer;
   user-select: none;
-  font-family: var(--tt-font-family);
   color: var(--tt-text-primary);
   transition: transform 160ms var(--tt-smooth-easing), box-shadow 160ms ease, background 160ms ease;
 }
 
+#tec-tools-dock.tt-hidden {
+  display: none !important;
+}
+
 #tec-tools-dock:hover {
-  transform: translateY(-2px) scale(1.02);
+  transform: translateY(-2px) scale(1.05);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.42), 0 0 16px rgba(0, 113, 227, 0.3);
   background: rgba(36, 36, 42, 0.88);
 }
 
 #tec-tools-dock:active {
-  transform: scale(0.96);
+  transform: scale(0.94);
   transition: transform 80ms ease-out;
 }
 
@@ -71,22 +76,6 @@
   fill: #ffffff;
 }
 
-#tec-tools-dock .tt-dock-label {
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: #ffffff;
-}
-
-#tec-tools-dock .tt-dock-badge {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.9);
-}
-
 /* --------------------------------------------------------------------------
    Wheel Modal Overlay
    -------------------------------------------------------------------------- */
@@ -94,9 +83,9 @@
   position: fixed;
   inset: 0;
   z-index: 999999;
-  background: rgba(0, 0, 0, 0.38);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -111,14 +100,16 @@
 }
 
 /* --------------------------------------------------------------------------
-   The Donut Wheel (filee.sh style radial interface)
+   The Donut Wheel (filee.sh style radial interface, Centralizada)
    -------------------------------------------------------------------------- */
 #tec-tools-wheel {
-  position: absolute;
-  width: 250px;
-  height: 250px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 290px;
+  height: 290px;
   border-radius: 50%;
-  transform: scale(0.65) rotate(-15deg);
+  transform: translate(-50%, -50%) scale(0.65) rotate(-10deg);
   opacity: 0;
   transition: transform 280ms var(--tt-spring-easing), opacity 200ms var(--tt-smooth-easing);
   user-select: none;
@@ -126,7 +117,7 @@
 }
 
 #tec-tools-wheel-overlay.tt-visible #tec-tools-wheel {
-  transform: scale(1) rotate(0deg);
+  transform: translate(-50%, -50%) scale(1) rotate(0deg);
   opacity: 1;
 }
 
@@ -136,14 +127,14 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 86px;
-  height: 86px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   background: var(--tt-glass-bg);
   backdrop-filter: blur(32px) saturate(200%);
   -webkit-backdrop-filter: blur(32px) saturate(200%);
   border: 1px solid var(--tt-glass-border);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -155,34 +146,23 @@
 }
 
 .tt-wheel-hub:hover {
-  transform: translate(-50%, -50%) scale(1.05);
-  background: rgba(38, 38, 44, 0.95);
+  transform: translate(-50%, -50%) scale(1.06);
+  background: rgba(44, 44, 52, 0.95);
 }
 
 .tt-wheel-hub:active {
-  transform: translate(-50%, -50%) scale(0.95);
+  transform: translate(-50%, -50%) scale(0.94);
 }
 
 .tt-wheel-hub-icon {
   width: 24px;
   height: 24px;
-  margin-bottom: 2px;
 }
 
 .tt-wheel-hub-icon svg {
   width: 100%;
   height: 100%;
   fill: #ffffff;
-}
-
-.tt-wheel-hub-label {
-  font-family: var(--tt-font-family);
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--tt-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  text-align: center;
 }
 
 /* Radial Slices (SVG-based donut sectors) */
@@ -194,11 +174,11 @@
 
 .tt-wheel-slice {
   cursor: pointer;
-  fill: rgba(30, 30, 36, 0.72);
+  fill: rgba(30, 30, 36, 0.78);
   stroke: rgba(255, 255, 255, 0.18);
   stroke-width: 1.5;
   transition: fill 180ms ease, stroke 180ms ease, filter 180ms ease, transform 180ms var(--tt-spring-easing);
-  transform-origin: 125px 125px;
+  transform-origin: 145px 145px;
 }
 
 .tt-wheel-slice:hover {
@@ -207,12 +187,12 @@
 }
 
 .tt-wheel-slice.slice-anki:hover {
-  fill: rgba(0, 113, 227, 0.72);
+  fill: rgba(0, 113, 227, 0.75);
   filter: drop-shadow(0 0 16px rgba(0, 113, 227, 0.6));
 }
 
 .tt-wheel-slice.slice-ia:hover {
-  fill: rgba(175, 82, 222, 0.72);
+  fill: rgba(175, 82, 222, 0.75);
   filter: drop-shadow(0 0 16px rgba(175, 82, 222, 0.6));
 }
 
@@ -227,6 +207,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 82px;
   pointer-events: none;
   z-index: 5;
   font-family: var(--tt-font-family);
@@ -237,13 +218,13 @@
 
 .tt-wheel-item.item-anki {
   top: 50%;
-  left: 36px;
+  left: 20px;
   transform: translateY(-50%);
 }
 
 .tt-wheel-item.item-ia {
   top: 50%;
-  right: 36px;
+  right: 20px;
   transform: translateY(-50%);
 }
 
@@ -256,23 +237,25 @@
 }
 
 .tt-wheel-item svg {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   fill: #ffffff;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
 .tt-wheel-item-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: -0.01em;
+  white-space: nowrap;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .tt-wheel-item-desc {
   font-size: 9px;
   font-weight: 400;
+  white-space: nowrap;
   color: rgba(255, 255, 255, 0.75);
 }
 

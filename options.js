@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     tempVal.textContent = tempSlider.value;
     document.getElementById('aiPrompt').value = c.aiPrompt || '';
 
-    document.getElementById('showDockPill').checked = c.showDockPill !== false;
+    document.getElementById('showDockPill').checked = Boolean(c.showDockPill);
   }
 
   // Save Config
