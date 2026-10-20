@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('aiUrl').value = c.aiUrl || 'https://api.openai.com/v1/chat/completions';
     document.getElementById('aiKey').value = c.aiKey || '';
+    document.getElementById('aiHeaders').value = c.aiHeaders || '';
     document.getElementById('aiModel').value = c.aiModel || 'gpt-4o-mini';
     tempSlider.value = c.aiTemperature !== undefined ? c.aiTemperature : 0.7;
     tempVal.textContent = tempSlider.value;
@@ -76,6 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       aiUrl: document.getElementById('aiUrl').value.trim() || 'https://api.openai.com/v1/chat/completions',
       aiKey: document.getElementById('aiKey').value.trim(),
+      aiHeaders: document.getElementById('aiHeaders').value.trim(),
       aiModel: document.getElementById('aiModel').value.trim() || 'gpt-4o-mini',
       aiTemperature: parseFloat(tempSlider.value) || 0.7,
       aiPrompt: document.getElementById('aiPrompt').value,

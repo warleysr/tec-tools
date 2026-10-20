@@ -61,7 +61,16 @@ Clique com o botão direito no ícone da extensão e selecione **Opções** (ou 
   - URL padrão: `http://127.0.0.1:8765`.
   - Clique em **Testar Conexão** para validar a comunicação em tempo real.
 - **Inteligência Artificial**:
-  - Defina sua chave de API (OpenAI, OpenRouter, Groq, etc.) e o modelo desejado.
+  - Defina sua chave de API (OpenAI, OpenRouter, Groq, Google Gemini, etc.) e o modelo desejado.
+  - **Suporte ao Google Gemini / Custom Headers**:
+    - **Endpoint**: `https://generativelanguage.googleapis.com/v1beta/interactions`
+    - **Modelo**: `gemini-3.8-flash`
+    - **Headers Customizados**:
+      ```http
+      x-goog-api-key: {{key}}
+      Api-Revision: 2026-05-20
+      ```
+    - O token `{{key}}` é substituído automaticamente pela sua chave de API informada.
 
 ---
 

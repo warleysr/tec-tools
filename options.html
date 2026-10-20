@@ -135,11 +135,19 @@
           <div class="setting-row">
             <div class="setting-meta">
               <label for="aiKey">Chave de API (API Key)</label>
-              <span>Sua chave privada da OpenAI, OpenRouter, Groq, etc.</span>
+              <span>Sua chave privada da OpenAI, OpenRouter, Groq, Google, etc.</span>
             </div>
             <div class="setting-control">
-              <input type="password" id="aiKey" placeholder="sk-..." />
+              <input type="password" id="aiKey" placeholder="sk-... ou chave Gemini" />
             </div>
+          </div>
+
+          <div class="setting-row vertical">
+            <div class="setting-meta">
+              <label for="aiHeaders">Headers Customizados (Opcional)</label>
+              <span>Headers adicionais (ex: Gemini Interactions, OpenRouter). Suporta JSON ou formato <code>Header: Valor</code>. Use <code>{{key}}</code> para injetar a chave de API.</span>
+            </div>
+            <textarea id="aiHeaders" rows="3" placeholder='x-goog-api-key: {{key}}&#10;Api-Revision: 2026-05-20'></textarea>
           </div>
 
           <div class="setting-row">

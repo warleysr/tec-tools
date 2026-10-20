@@ -17,6 +17,7 @@ const DEFAULT_CONFIG = {
   ankiTemplateBack: `<h3>Gabarito: {{gabarito}}</h3>\n<div class="gabarito-texto">{{gabarito_texto}}</div>\n<hr>\n<p><small><a href="{{url}}">Ver no TEC Concursos</a></small></p>`,
   aiUrl: "https://api.openai.com/v1/chat/completions",
   aiKey: "",
+  aiHeaders: "",
   aiModel: "gpt-4o-mini",
   aiTemperature: 0.7,
   aiPrompt: `Você é um professor especialista em preparação para concursos públicos. Analise a seguinte questão com rigor e didática:
@@ -70,26 +71,58 @@ async function callAnkiConnect(url, action, params = {}) {
   }
 }
 
-// Helper para chamadas de IA
+// Helper para chamadas de IA (OpenAI, Gemini Interactions, Anthropic, etc.)
 async function callAICompletions(config, systemPrompt, userPrompt) {
-  if (!config.aiKey && !config.aiUrl.includes("localhost") && !config.aiUrl.includes("127.0.0.1")) {
-    throw new Error("Chave de API de IA não configurada. Abra as opções da extensão TEC-Tools para inserir sua chave.");
-  }
-
   const endpoint = config.aiUrl.trim() || "https://api.openai.com/v1/chat/completions";
   const headers = { "Content-Type": "application/json" };
-  if (config.aiKey) {
+
+  // Parse de headers customizados (suporta JSON ou formato "Header: Valor" por linha)
+  if (config.aiHeaders && config.aiHeaders.trim()) {
+    try {
+      const parsed = JSON.parse(config.aiHeaders);
+      for (const [k, v] of Object.entries(parsed)) {
+        headers[k] = String(v)
+          .replace("{{key}}", (config.aiKey || "").trim())
+          .replace("$GEMINI_API_KEY", (config.aiKey || "").trim());
+      }
+    } catch {
+      config.aiHeaders.split("\n").forEach(line => {
+        const idx = line.indexOf(":");
+        if (idx > 0) {
+          const k = line.slice(0, idx).trim();
+          const v = line.slice(idx + 1).trim()
+            .replace("{{key}}", (config.aiKey || "").trim())
+            .replace("$GEMINI_API_KEY", (config.aiKey || "").trim());
+          if (k) headers[k] = v;
+        }
+      });
+    }
+  }
+
+  // Se não foi definido header de autenticação customizado e existe aiKey, usa Authorization Bearer
+  if (config.aiKey && !headers["Authorization"] && !headers["x-goog-api-key"] && !headers["api-key"]) {
     headers["Authorization"] = `Bearer ${config.aiKey.trim()}`;
   }
 
-  const payload = {
-    model: config.aiModel.trim() || "gpt-4o-mini",
-    temperature: parseFloat(config.aiTemperature) || 0.7,
-    messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: userPrompt }
-    ]
-  };
+  // Detecção de payload: Gemini Interactions vs OpenAI Chat Completions
+  const isInteractions = endpoint.includes("/interactions");
+  let payload;
+
+  if (isInteractions) {
+    payload = {
+      model: config.aiModel.trim() || "gemini-3.8-flash",
+      input: `${systemPrompt}\n\n${userPrompt}`
+    };
+  } else {
+    payload = {
+      model: config.aiModel.trim() || "gpt-4o-mini",
+      temperature: parseFloat(config.aiTemperature) || 0.7,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+      ]
+    };
+  }
 
   const response = await fetch(endpoint, {
     method: "POST",
@@ -102,15 +135,26 @@ async function callAICompletions(config, systemPrompt, userPrompt) {
     let parsedMsg = errText;
     try {
       const j = JSON.parse(errText);
-      parsedMsg = j.error?.message || errText;
+      parsedMsg = j.error?.message || j.message || errText;
     } catch {}
     throw new Error(`Erro na API de IA (${response.status}): ${parsedMsg}`);
   }
 
   const data = await response.json();
-  const content = data.choices?.[0]?.message?.content;
+
+  // Extrai o texto da resposta independente da estrutura (OpenAI choices, Gemini output, etc.)
+  let content = data.choices?.[0]?.message?.content
+    || data.output
+    || data.candidates?.[0]?.content?.parts?.[0]?.text
+    || data.response
+    || data.text;
+
+  if (typeof content === "object" && content !== null) {
+    content = content.text || content.content || JSON.stringify(content);
+  }
+
   if (!content) {
-    throw new Error("A API retornou uma resposta vazia.");
+    throw new Error("A API retornou uma resposta sem conteúdo textual.");
   }
   return content;
 }
