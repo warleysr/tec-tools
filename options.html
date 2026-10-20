@@ -64,17 +64,19 @@
               <span>Nome do baralho onde as questões serão salvas (criado automaticamente se não existir).</span>
             </div>
             <div class="setting-control">
-              <input type="text" id="ankiDeck" placeholder="TEC Concursos" />
+              <input type="text" id="ankiDeck" list="ankiDeckList" placeholder="TEC Concursos" />
+              <datalist id="ankiDeckList"></datalist>
             </div>
           </div>
 
           <div class="setting-row">
             <div class="setting-meta">
               <label for="ankiModel">Tipo de Nota (Model)</label>
-              <span>Tipo de cartão no Anki (ex: Basic, Cloze).</span>
+              <span>Tipo de cartão no Anki (ex: Básico, Basic). Detectado automaticamente se não preenchido.</span>
             </div>
             <div class="setting-control">
-              <input type="text" id="ankiModel" placeholder="Basic" />
+              <input type="text" id="ankiModel" list="ankiModelList" placeholder="Básico" />
+              <datalist id="ankiModelList"></datalist>
             </div>
           </div>
         </div>

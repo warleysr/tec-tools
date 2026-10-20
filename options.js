@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const c = res.config;
     document.getElementById('ankiUrl').value = c.ankiUrl || 'http://127.0.0.1:8765';
     document.getElementById('ankiDeck').value = c.ankiDeck || 'TEC Concursos';
-    document.getElementById('ankiModel').value = c.ankiModel || 'Basic';
+    document.getElementById('ankiModel').value = c.ankiModel || 'Básico';
     document.getElementById('ankiTemplateFront').value = c.ankiTemplateFront || '';
     document.getElementById('ankiTemplateBack').value = c.ankiTemplateBack || '';
 
@@ -46,12 +46,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('showDockPill').checked = Boolean(c.showDockPill);
   }
 
+  // Tenta carregar baralhos e modelos automaticamente se o Anki estiver aberto
+  async function carregarListasAnki(url) {
+    try {
+      const decksRes = await chrome.runtime.sendMessage({ action: 'TEST_ANKI', url });
+      if (decksRes && decksRes.success) {
+        if (Array.isArray(decksRes.decks)) {
+          const deckDl = document.getElementById('ankiDeckList');
+          deckDl.innerHTML = decksRes.decks.map(d => `<option value="${d}">`).join('');
+        }
+      }
+      const modelsRes = await chrome.runtime.sendMessage({ action: 'ANKI_GET_MODELS' });
+      if (modelsRes && modelsRes.success && Array.isArray(modelsRes.models)) {
+        const modelDl = document.getElementById('ankiModelList');
+        modelDl.innerHTML = modelsRes.models.map(m => `<option value="${m}">`).join('');
+      }
+    } catch {}
+  }
+  carregarListasAnki(document.getElementById('ankiUrl').value.trim());
+
   // Save Config
   async function saveSettings() {
     const config = {
       ankiUrl: document.getElementById('ankiUrl').value.trim(),
       ankiDeck: document.getElementById('ankiDeck').value.trim() || 'TEC Concursos',
-      ankiModel: document.getElementById('ankiModel').value.trim() || 'Basic',
+      ankiModel: document.getElementById('ankiModel').value.trim() || 'Básico',
       ankiTemplateFront: document.getElementById('ankiTemplateFront').value,
       ankiTemplateBack: document.getElementById('ankiTemplateBack').value,
 
@@ -101,6 +120,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (response && response.success) {
         ankiStatusMsg.className = 'status-badge success';
         ankiStatusMsg.textContent = `✓ Conectado ao Anki! Versão da API: ${response.version}. Baralhos encontrados: ${response.decks.length}.`;
+        carregarListasAnki(url);
       } else {
         ankiStatusMsg.className = 'status-badge error';
         ankiStatusMsg.textContent = `✕ ${response.error || 'Falha na resposta'}`;

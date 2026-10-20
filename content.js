@@ -345,6 +345,13 @@
       }
     }
 
+    // Normalização para Certo / Errado (Cebraspe/CESPE)
+    if (gabaritoLetra.toUpperCase() === 'C' && altItems.length === 2) {
+      gabaritoLetra = 'Certo (C)';
+    } else if (gabaritoLetra.toUpperCase() === 'E' && altItems.length === 2) {
+      gabaritoLetra = 'Errado (E)';
+    }
+
     const alternativasHtml = alternativasList.length ? `<ul>${alternativasList.join('')}</ul>` : '';
     const alternativasCompletas = alternativasCompletasList.join('\n');
 
@@ -370,34 +377,49 @@
   async function handleSendToAnki(q) {
     if (!currentConfig) {
       const res = await chrome.runtime.sendMessage({ action: 'GET_CONFIG' });
-      currentConfig = res.config;
+      currentConfig = res?.config || {};
     }
 
     if (q.gabarito.includes('pendente')) {
       showToast('Dica: Resolva a questão no TEC para carregar o gabarito oficial!', 'info');
     }
 
-    // Interpolação de templates
+    // Interpolação de templates com fallbacks seguros
     const replacements = {
-      '{{id}}': q.id,
-      '{{materia}}': q.materia,
-      '{{assunto}}': q.assunto,
+      '{{id}}': q.id || '',
+      '{{materia}}': q.materia || '',
+      '{{assunto}}': q.assunto || '',
       '{{banca}}': q.banca || 'TEC',
       '{{ano}}': q.ano || '',
       '{{orgao}}': q.orgao || '',
-      '{{enunciado}}': q.enunciado,
-      '{{alternativas}}': q.alternativasHtml,
-      '{{gabarito}}': q.gabarito,
-      '{{gabarito_texto}}': q.gabaritoTexto,
-      '{{url}}': q.url
+      '{{enunciado}}': q.enunciado || '',
+      '{{alternativas}}': q.alternativasHtml || '',
+      '{{gabarito}}': q.gabarito || '',
+      '{{gabarito_texto}}': q.gabaritoTexto || '',
+      '{{url}}': q.url || ''
     };
 
-    let front = currentConfig.ankiTemplateFront;
-    let back = currentConfig.ankiTemplateBack;
+    let front = (currentConfig && currentConfig.ankiTemplateFront) || '';
+    let back = (currentConfig && currentConfig.ankiTemplateBack) || '';
+
+    if (!front.trim()) {
+      front = `<h3>{{materia}}</h3>\n<h4>{{assunto}}</h4>\n<p><strong>Questão:</strong> {{id}} ({{banca}} / {{ano}} - {{orgao}})</p>\n<div class="enunciado">{{enunciado}}</div>\n<hr>\n<div class="alternativas">{{alternativas}}</div>`;
+    }
+    if (!back.trim()) {
+      back = `<h3>Gabarito: {{gabarito}}</h3>\n<div class="gabarito-texto">{{gabarito_texto}}</div>\n<hr>\n<p><small><a href="{{url}}">Ver no TEC Concursos</a></small></p>`;
+    }
 
     for (const [key, val] of Object.entries(replacements)) {
       front = front.split(key).join(val);
       back = back.split(key).join(val);
+    }
+
+    // Garante que a frente e o verso nunca fiquem em branco
+    if (!front.trim()) {
+      front = q.enunciado || `Questão ${q.id}`;
+    }
+    if (!back.trim()) {
+      back = `Gabarito: ${q.gabarito || 'Não informado'}`;
     }
 
     showToast('Enviando card para o AnkiConnect...', 'info');
@@ -408,6 +430,8 @@
         note: {
           front,
           back,
+          enunciado: q.enunciado,
+          gabarito: q.gabarito,
           materia: q.materia,
           banca: q.banca
         }

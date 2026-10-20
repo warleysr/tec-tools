@@ -10,9 +10,9 @@ const DEFAULT_CONFIG = {
   hotkey: "KeyW",
   ankiUrl: "http://127.0.0.1:8765",
   ankiDeck: "TEC Concursos",
-  ankiModel: "Basic",
-  ankiFrontField: "Front",
-  ankiBackField: "Back",
+  ankiModel: "Básico",
+  ankiFrontField: "Frente",
+  ankiBackField: "Verso",
   ankiTemplateFront: `<h3>{{materia}}</h3>\n<h4>{{assunto}}</h4>\n<p><strong>Questão:</strong> {{id}} ({{banca}} / {{ano}} - {{orgao}})</p>\n<div class="enunciado">{{enunciado}}</div>\n<hr>\n<div class="alternativas">{{alternativas}}</div>`,
   ankiTemplateBack: `<h3>Gabarito: {{gabarito}}</h3>\n<div class="gabarito-texto">{{gabarito_texto}}</div>\n<hr>\n<p><small><a href="{{url}}">Ver no TEC Concursos</a></small></p>`,
   aiUrl: "https://api.openai.com/v1/chat/completions",
@@ -148,19 +148,56 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         case "ANKI_ADD_NOTE": {
           const noteData = request.note;
-          const deck = config.ankiDeck.trim() || "TEC Concursos";
-          const model = config.ankiModel.trim() || "Basic";
+          const deck = config.ankiDeck?.trim() || "TEC Concursos";
 
-          // Cria baralho caso ainda não exista
+          // Garante que o baralho existe
           try {
             await callAnkiConnect(config.ankiUrl, "createDeck", { deck });
           } catch {}
 
+          // 1. Resolve modelo existente no Anki do usuário (ex: "Básico", "Basic")
+          const allModels = (await callAnkiConnect(config.ankiUrl, "modelNames").catch(() => [])) || [];
+          let targetModel = config.ankiModel?.trim() || "";
+
+          if (!allModels.includes(targetModel)) {
+            const match = allModels.find(m => m.toLowerCase() === targetModel.toLowerCase())
+              || allModels.find(m => m === "Básico")
+              || allModels.find(m => m === "Basic")
+              || allModels.find(m => m.startsWith("Basic") || m.startsWith("Básico"))
+              || allModels[0]
+              || "Básico";
+            if (match) targetModel = match;
+          }
+
+          // 2. Consulta os nomes reais dos campos do modelo selecionado (ex: Frente/Verso ou Front/Back)
+          const modelFields = (await callAnkiConnect(config.ankiUrl, "modelFieldNames", { modelName: targetModel }).catch(() => [])) || [];
+
+          // 3. Monta o payload de campos garantindo que o primeiro campo NUNCA fique vazio
+          const frontContent = (noteData.front && noteData.front.trim()) || noteData.enunciado || "Questão TEC Concursos";
+          const backContent = (noteData.back && noteData.back.trim()) || noteData.gabarito || "Gabarito TEC Concursos";
+
           const fields = {};
-          const frontField = config.ankiFrontField || "Front";
-          const backField = config.ankiBackField || "Back";
-          fields[frontField] = noteData.front;
-          fields[backField] = noteData.back;
+          if (modelFields.length >= 2) {
+            // Mapeia 1º campo para Frente e 2º campo para Verso
+            fields[modelFields[0]] = frontContent;
+            fields[modelFields[1]] = backContent;
+          } else if (modelFields.length === 1) {
+            fields[modelFields[0]] = `${frontContent}<hr>${backContent}`;
+          } else {
+            // Fallbacks genéricos
+            fields["Frente"] = frontContent;
+            fields["Verso"] = backContent;
+            fields["Front"] = frontContent;
+            fields["Back"] = backContent;
+          }
+
+          // Se o usuário especificou campos customizados que existem no modelo, respeita
+          if (config.ankiFrontField && modelFields.includes(config.ankiFrontField)) {
+            fields[config.ankiFrontField] = frontContent;
+          }
+          if (config.ankiBackField && modelFields.includes(config.ankiBackField)) {
+            fields[config.ankiBackField] = backContent;
+          }
 
           const tags = ["tec-concursos"];
           if (noteData.materia) tags.push(noteData.materia.replace(/\s+/g, "-"));
@@ -169,14 +206,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           const noteId = await callAnkiConnect(config.ankiUrl, "addNote", {
             note: {
               deckName: deck,
-              modelName: model,
+              modelName: targetModel,
               fields,
               tags,
               options: { allowDuplicate: false }
             }
           });
 
-          sendResponse({ success: true, noteId, deck });
+          sendResponse({ success: true, noteId, deck, model: targetModel });
           break;
         }
 
