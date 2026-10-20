@@ -1,0 +1,8 @@
+# Dependências e SO
+.DS_Store
+Thumbs.db
+node_modules/
+*.log
+.env
+.idea/
+.vscode/

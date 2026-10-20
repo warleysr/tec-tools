@@ -1,0 +1,79 @@
+# ⚡ TEC-Tools
+
+Extensão para Google Chrome projetada especificamente para o [TEC Concursos](https://www.tecconcursos.com.br), adicionando um menu radial circular em donut (**Wheel**, inspirado no [filee.sh](https://filee.sh/)) com estética e física fluidas baseadas no **Apple Design System (macOS / iOS)**.
+
+---
+
+## ✨ Funcionalidades Principais
+
+### 1. 🎡 Menu Radial Donut (Wheel)
+- **Design Físico & Fluido**: Inspirado na interface física do Apple Design System e do filee.sh, com materiais em vidro fosco (*glassmorphism*, `backdrop-filter: blur(28px)`), iluminação interna e resposta instantânea no toque/clique (`scale: 0.96` no `:active`).
+- **Ativação Rápida**:
+  - Pelo botão flutuante (*Dock Pill*) no canto inferior da página.
+  - Pelo atalho global do teclado: <kbd>Alt</kbd> + <kbd>W</kbd> (abre a roda diretamente sob o cursor do mouse).
+  - Pressionar <kbd>Esc</kbd> ou clicar fora fecha a roda suavemente com animação de mola (*spring*).
+
+### 2. 🎴 Enviar para o Anki (via AnkiConnect)
+- Extrai instantaneamente a questão atualmente ativa/resolvida:
+  - **Frente**: Enunciado completo, cabeçalho (Matéria, Assunto, Banca, Ano, Órgão, ID) e alternativas.
+  - **Verso**: Gabarito oficial identificado na resolução e texto correspondente.
+- **Templates 100% Customizáveis**: Configure os campos e o HTML da frente e do verso através das opções da extensão utilizando variáveis:
+  - `{{enunciado}}`, `{{alternativas}}`, `{{gabarito}}`, `{{gabarito_texto}}`, `{{materia}}`, `{{assunto}}`, `{{banca}}`, `{{ano}}`, `{{orgao}}`, `{{id}}`, `{{url}}`.
+- Notificação dinâmica em estilo *Dynamic Island* da Apple informando a confirmação do card salvo no baralho configurado.
+
+### 3. ✨ Explicar com IA (Janela Translúcida macOS)
+- Envia a questão, alternativas e gabarito para modelos de linguagem.
+- **Janela Translúcida Flutuante**:
+  - Estética visual macOS / Sequoia / visionOS com controles *traffic lights* (fechar, minimizar).
+  - *Direct manipulation*: janela arrastável pelo cabeçalho respeitando a física do ponteiro (*grab offset*) e redimensionável.
+  - Renderizador nativo de Markdown (negrito, listas, citações, títulos, blocos de código).
+  - Botão de cópia rápida com feedback tátil e botão de regerar análise.
+- **Totalmente Configurável**:
+  - Endpoint compatível com a API OpenAI v1 (OpenAI, OpenRouter, Groq, DeepSeek, Ollama local, etc.).
+  - Modelo configurável (`gpt-4o-mini`, `gpt-4o`, `claude-3-5-sonnet`, `llama-3.3-70b`, etc.).
+  - Prompt didático e temperatura ajustáveis.
+
+---
+
+## 🚀 Como Instalar no Google Chrome
+
+1. Clone ou baixe este repositório para o seu computador:
+   ```bash
+   git clone https://github.com/warleysr/tec-tools.git
+   ```
+2. Abra o Google Chrome e acesse:
+   ```
+   chrome://extensions/
+   ```
+3. Ative a opção **Modo do desenvolvedor** no canto superior direito.
+4. Clique em **Carregar sem compactação** (*Load unpacked*).
+5. Selecione a pasta da extensão (`tec-tools`).
+6. Pronto! A extensão estará ativa em todas as páginas do `tecconcursos.com.br`.
+
+---
+
+## ⚙️ Configurações
+
+Clique com o botão direito no ícone da extensão e selecione **Opções** (ou pelo menu popup):
+
+- **AnkiConnect**:
+  - Certifique-se de que o Anki está aberto com o plugin [AnkiConnect](https://ankiweb.net/shared/info/2055492153) instalado (código `2055492153`).
+  - URL padrão: `http://127.0.0.1:8765`.
+  - Clique em **Testar Conexão** para validar a comunicação em tempo real.
+- **Inteligência Artificial**:
+  - Defina sua chave de API (OpenAI, OpenRouter, Groq, etc.) e o modelo desejado.
+
+---
+
+## 🛠️ Tecnologias
+
+- **Manifest V3**: Padrão moderno de extensões do Chrome.
+- **Vanilla JavaScript & CSS Moderno**: Alta velocidade, sem dependências externas pesadas ou empacotadores lentos.
+- **Apple Human Interface Guidelines (HIG)**: Transparências com blur gaussiano, transições com curvas cúbicas/mola e tipografia San Francisco.
+- **AnkiConnect API v6**: Integração direta com o motor local do Anki.
+
+---
+
+## 📄 Licença
+
+MIT License © [warleysr](https://github.com/warleysr)

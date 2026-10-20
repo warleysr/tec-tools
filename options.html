@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurações — TEC-Tools</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="settings-window">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="app-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        </div>
+        <div class="app-info">
+          <h2>TEC-Tools</h2>
+          <span>v1.0.0</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-tab="anki">
+          <svg viewBox="0 0 24 24"><path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-1.5V6a3 3 0 0 0-3-3h-9a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h10.5zm-12-16h9a1 1 0 0 1 1 1v4.5H6V6a1 1 0 0 1 1-1zm-1 7.5h10.5v5.5a1 1 0 0 1-1 1H6.5a1 1 0 0 1-1-1v-5.5zm13.5 0h1a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1h-1v-6.5z"/></svg>
+          <span>AnkiConnect</span>
+        </button>
+        <button class="nav-item" data-tab="ai">
+          <svg viewBox="0 0 24 24"><path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z"/></svg>
+          <span>Inteligência Artificial</span>
+        </button>
+        <button class="nav-item" data-tab="general">
+          <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          <span>Geral & Wheel</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content-area">
+      <!-- Tab 1: Anki -->
+      <section class="tab-pane active" id="tab-anki">
+        <header class="pane-header">
+          <h1>AnkiConnect</h1>
+          <p>Configuração do servidor local e modelos de cartões flashcard.</p>
+        </header>
+
+        <div class="settings-group">
+          <div class="setting-row">
+            <div class="setting-meta">
+              <label for="ankiUrl">Servidor AnkiConnect</label>
+              <span>Endpoint HTTP local do plugin AnkiConnect (porta padrão: 8765).</span>
+            </div>
+            <div class="setting-control control-row">
+              <input type="text" id="ankiUrl" placeholder="http://127.0.0.1:8765" />
+              <button class="btn btn-secondary" id="btnTestAnki">Testar Conexão</button>
+            </div>
+          </div>
+          <div id="ankiStatusMsg" class="status-badge hidden"></div>
+
+          <div class="setting-row">
+            <div class="setting-meta">
+              <label for="ankiDeck">Baralho de Destino</label>
+              <span>Nome do baralho onde as questões serão salvas (criado automaticamente se não existir).</span>
+            </div>
+            <div class="setting-control">
+              <input type="text" id="ankiDeck" placeholder="TEC Concursos" />
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-meta">
+              <label for="ankiModel">Tipo de Nota (Model)</label>
+              <span>Tipo de cartão no Anki (ex: Basic, Cloze).</span>
+            </div>
+            <div class="setting-control">
+              <input type="text" id="ankiModel" placeholder="Basic" />
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="group-title">Templates dos Cartões (HTML & Variáveis)</div>
+          <div class="token-pills">
+            <span>Variáveis disponíveis:</span>
+            <code>{{enunciado}}</code>
+            <code>{{alternativas}}</code>
+            <code>{{gabarito}}</code>
+            <code>{{gabarito_texto}}</code>
+            <code>{{materia}}</code>
+            <code>{{assunto}}</code>
+            <code>{{banca}}</code>
+            <code>{{ano}}</code>
+            <code>{{orgao}}</code>
+            <code>{{id}}</code>
+            <code>{{url}}</code>
+          </div>
+
+          <div class="setting-row vertical">
+            <div class="setting-meta">
+              <label for="ankiTemplateFront">Frente do Cartão (Pergunta / Enunciado)</label>
+            </div>
+            <textarea id="ankiTemplateFront" rows="5"></textarea>
+          </div>
+
+          <div class="setting-row vertical">
+            <div class="setting-meta">
+              <label for="ankiTemplateBack">Verso do Cartão (Resposta / Gabarito)</label>
+            </div>
+            <textarea id="ankiTemplateBack" rows="5"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 2: IA -->
+      <section class="tab-pane" id="tab-ai">
+        <header class="pane-header">
+          <h1>Inteligência Artificial</h1>
+          <p>Compatível com OpenAI, OpenRouter, Groq, Ollama, DeepSeek ou qualquer endpoint compatível.</p>
+        </header>
+
+        <div class="settings-group">
+          <div class="setting-row">
+            <div class="setting-meta">
+              <label for="aiUrl">Endpoint da API (Chat Completions)</label>
+              <span>URL compatível com a especificação OpenAI v1.</span>
+            </div>
+            <div class="setting-control">
+              <input type="text" id="aiUrl" placeholder="https://api.openai.com/v1/chat/completions" />
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-meta">
+              <label for="aiKey">Chave de API (API Key)</label>
+              <span>Sua chave privada da OpenAI, OpenRouter, Groq, etc.</span>
+            </div>
+            <div class="setting-control">
+              <input type="password" id="aiKey" placeholder="sk-..." />
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-meta">
+              <label for="aiModel">Modelo de IA</label>
+              <span>Ex: gpt-4o-mini, gpt-4o, claude-3-5-sonnet, llama-3.3-70b-versatile.</span>
+            </div>
+            <div class="setting-control">
+              <input type="text" id="aiModel" placeholder="gpt-4o-mini" />
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-meta">
+              <label for="aiTemperature">Temperatura</label>
+              <span>Controla a criatividade da resposta (0.0 mais preciso a 1.0 mais variado).</span>
+            </div>
+            <div class="setting-control control-slider">
+              <input type="range" id="aiTemperature" min="0" max="1" step="0.1" value="0.7" />
+              <span id="aiTempVal">0.7</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="group-title">Prompt da Explicação</div>
+          <div class="token-pills">
+            <span>Variáveis no prompt:</span>
+            <code>{{enunciado}}</code>
+            <code>{{alternativas_completas}}</code>
+            <code>{{gabarito}}</code>
+            <code>{{materia}}</code>
+            <code>{{assunto}}</code>
+            <code>{{banca}}</code>
+            <code>{{ano}}</code>
+          </div>
+
+          <div class="setting-row vertical">
+            <textarea id="aiPrompt" rows="8"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 3: Geral & Wheel -->
+      <section class="tab-pane" id="tab-general">
+        <header class="pane-header">
+          <h1>Geral & Wheel Menu</h1>
+          <p>Personalize o comportamento da roda de opções estilo Apple no TEC Concursos.</p>
+        </header>
+
+        <div class="settings-group">
+          <div class="setting-row">
+            <div class="setting-meta">
+              <label>Atalho Global do Teclado</label>
+              <span>Pressione <kbd>Alt</kbd> + <kbd>W</kbd> em qualquer questão no tecconcursos.com.br para abrir a Wheel instantaneamente.</span>
+            </div>
+            <div class="setting-control">
+              <span class="badge-shortcut">Alt + W</span>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-meta">
+              <label>Botão Flutuante (Dock Pill)</label>
+              <span>Exibir pílula translúcida no canto inferior direito para acesso com um clique.</span>
+            </div>
+            <div class="setting-control">
+              <label class="apple-toggle">
+                <input type="checkbox" id="showDockPill" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="group-title">Apresentação da Wheel</div>
+          <div class="wheel-preview-card">
+            <div class="preview-donut">
+              <div class="slice left"><span>🎴 Anki</span></div>
+              <div class="slice right"><span>✨ IA</span></div>
+              <div class="hub"><span>Wheel</span></div>
+            </div>
+            <div class="preview-text">
+              <strong>Menu Donut estilo filee.sh</strong>
+              <p>Inspirado no design físico e fluído dos sistemas Apple, com feedback tátil de escala e efeito de vidro fosco (glassmorphism).</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Bar -->
+      <footer class="footer-bar">
+        <span id="saveStatus" class="save-status">Todas as alterações são salvas automaticamente</span>
+        <button class="btn btn-primary" id="btnSave">Salvar Configurações</button>
+      </footer>
+    </main>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

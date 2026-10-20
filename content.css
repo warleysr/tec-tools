@@ -1,0 +1,586 @@
+/* ==========================================================================
+   TEC-Tools — Content Stylesheet (Apple Design System)
+   ========================================================================== */
+
+:root {
+  --tt-font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --tt-glass-bg: rgba(28, 28, 32, 0.78);
+  --tt-glass-light-bg: rgba(255, 255, 255, 0.82);
+  --tt-glass-border: rgba(255, 255, 255, 0.16);
+  --tt-glass-shadow: 0 24px 64px rgba(0, 0, 0, 0.42), 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  --tt-accent-blue: #0071e3;
+  --tt-accent-purple: #af52de;
+  --tt-accent-green: #34c759;
+  --tt-accent-orange: #ff9500;
+  --tt-text-primary: #f5f5f7;
+  --tt-text-secondary: rgba(235, 235, 245, 0.65);
+  --tt-spring-easing: cubic-bezier(0.175, 0.885, 0.32, 1.15);
+  --tt-smooth-easing: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --------------------------------------------------------------------------
+   Floating Trigger Dock (Apple Pill)
+   -------------------------------------------------------------------------- */
+#tec-tools-dock {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999998;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 10px;
+  background: var(--tt-glass-bg);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid var(--tt-glass-border);
+  border-radius: 999px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  user-select: none;
+  font-family: var(--tt-font-family);
+  color: var(--tt-text-primary);
+  transition: transform 160ms var(--tt-smooth-easing), box-shadow 160ms ease, background 160ms ease;
+}
+
+#tec-tools-dock:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.42), 0 0 16px rgba(0, 113, 227, 0.3);
+  background: rgba(36, 36, 42, 0.88);
+}
+
+#tec-tools-dock:active {
+  transform: scale(0.96);
+  transition: transform 80ms ease-out;
+}
+
+#tec-tools-dock .tt-dock-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0071e3 0%, #af52de 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 113, 227, 0.4);
+}
+
+#tec-tools-dock .tt-dock-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: #ffffff;
+}
+
+#tec-tools-dock .tt-dock-label {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+
+#tec-tools-dock .tt-dock-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* --------------------------------------------------------------------------
+   Wheel Modal Overlay
+   -------------------------------------------------------------------------- */
+#tec-tools-wheel-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms var(--tt-smooth-easing);
+}
+
+#tec-tools-wheel-overlay.tt-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* --------------------------------------------------------------------------
+   The Donut Wheel (filee.sh style radial interface)
+   -------------------------------------------------------------------------- */
+#tec-tools-wheel {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  transform: scale(0.65) rotate(-15deg);
+  opacity: 0;
+  transition: transform 280ms var(--tt-spring-easing), opacity 200ms var(--tt-smooth-easing);
+  user-select: none;
+  pointer-events: auto;
+}
+
+#tec-tools-wheel-overlay.tt-visible #tec-tools-wheel {
+  transform: scale(1) rotate(0deg);
+  opacity: 1;
+}
+
+/* Center Hub */
+.tt-wheel-hub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: var(--tt-glass-bg);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid var(--tt-glass-border);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 140ms ease, background 140ms ease;
+}
+
+.tt-wheel-hub:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+  background: rgba(38, 38, 44, 0.95);
+}
+
+.tt-wheel-hub:active {
+  transform: translate(-50%, -50%) scale(0.95);
+}
+
+.tt-wheel-hub-icon {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 2px;
+}
+
+.tt-wheel-hub-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: #ffffff;
+}
+
+.tt-wheel-hub-label {
+  font-family: var(--tt-font-family);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--tt-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+/* Radial Slices (SVG-based donut sectors) */
+.tt-wheel-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.45));
+}
+
+.tt-wheel-slice {
+  cursor: pointer;
+  fill: rgba(30, 30, 36, 0.72);
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-width: 1.5;
+  transition: fill 180ms ease, stroke 180ms ease, filter 180ms ease, transform 180ms var(--tt-spring-easing);
+  transform-origin: 125px 125px;
+}
+
+.tt-wheel-slice:hover {
+  stroke: rgba(255, 255, 255, 0.45);
+  transform: scale(1.04);
+}
+
+.tt-wheel-slice.slice-anki:hover {
+  fill: rgba(0, 113, 227, 0.72);
+  filter: drop-shadow(0 0 16px rgba(0, 113, 227, 0.6));
+}
+
+.tt-wheel-slice.slice-ia:hover {
+  fill: rgba(175, 82, 222, 0.72);
+  filter: drop-shadow(0 0 16px rgba(175, 82, 222, 0.6));
+}
+
+.tt-wheel-slice:active {
+  transform: scale(0.98);
+}
+
+/* Slices Content (Icons & Labels inside wheel) */
+.tt-wheel-item {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 5;
+  font-family: var(--tt-font-family);
+  color: #ffffff;
+  text-align: center;
+  transition: transform 160ms var(--tt-spring-easing);
+}
+
+.tt-wheel-item.item-anki {
+  top: 50%;
+  left: 36px;
+  transform: translateY(-50%);
+}
+
+.tt-wheel-item.item-ia {
+  top: 50%;
+  right: 36px;
+  transform: translateY(-50%);
+}
+
+.tt-wheel-slice.slice-anki:hover ~ .item-anki {
+  transform: translateY(-50%) scale(1.08);
+}
+
+.tt-wheel-slice.slice-ia:hover ~ .item-ia {
+  transform: translateY(-50%) scale(1.08);
+}
+
+.tt-wheel-item svg {
+  width: 28px;
+  height: 28px;
+  fill: #ffffff;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+.tt-wheel-item-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.tt-wheel-item-desc {
+  font-size: 9px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* --------------------------------------------------------------------------
+   Translucent Apple Modal (IA Explanation Window)
+   -------------------------------------------------------------------------- */
+#tec-tools-ai-modal {
+  position: fixed;
+  top: 100px;
+  right: 40px;
+  width: 540px;
+  max-width: calc(100vw - 40px);
+  max-height: 82vh;
+  z-index: 1000000;
+  background: var(--tt-glass-bg);
+  backdrop-filter: blur(36px) saturate(190%);
+  -webkit-backdrop-filter: blur(36px) saturate(190%);
+  border: 1px solid var(--tt-glass-border);
+  border-radius: 20px;
+  box-shadow: var(--tt-glass-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--tt-font-family);
+  color: var(--tt-text-primary);
+  opacity: 0;
+  transform: scale(0.92) translateY(12px);
+  pointer-events: none;
+  transition: opacity 220ms var(--tt-smooth-easing), transform 240ms var(--tt-spring-easing);
+  resize: both;
+}
+
+#tec-tools-ai-modal.tt-visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+
+/* macOS Window Titlebar */
+.tt-modal-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: grab;
+  user-select: none;
+}
+
+.tt-modal-titlebar:active {
+  cursor: grabbing;
+}
+
+/* Traffic Lights */
+.tt-traffic-lights {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tt-light {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 120ms ease;
+}
+
+.tt-light:hover {
+  filter: brightness(1.15);
+}
+
+.tt-light-close {
+  background: #ff5f57;
+  border: 0.5px solid rgba(0, 0, 0, 0.2);
+}
+
+.tt-light-min {
+  background: #febc2e;
+  border: 0.5px solid rgba(0, 0, 0, 0.2);
+}
+
+.tt-light-max {
+  background: #28c840;
+  border: 0.5px solid rgba(0, 0, 0, 0.2);
+}
+
+.tt-modal-header-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tt-modal-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.tt-modal-badge {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(175, 82, 222, 0.25);
+  color: #d18ff0;
+  border: 1px solid rgba(175, 82, 222, 0.35);
+}
+
+.tt-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tt-action-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--tt-text-primary);
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.tt-action-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.tt-action-btn:active {
+  transform: scale(0.96);
+}
+
+.tt-action-btn svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
+
+/* Modal Content Body */
+.tt-modal-body {
+  padding: 18px 20px;
+  overflow-y: auto;
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.tt-modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tt-modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tt-modal-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.tt-modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Markdown styling in body */
+.tt-modal-body h1, .tt-modal-body h2, .tt-modal-body h3, .tt-modal-body h4 {
+  color: #ffffff;
+  margin-top: 14px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.tt-modal-body h2 { font-size: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 4px; }
+.tt-modal-body h3 { font-size: 14px; color: #a1d2ff; }
+.tt-modal-body p { margin-bottom: 10px; }
+.tt-modal-body ul, .tt-modal-body ol { margin-left: 20px; margin-bottom: 12px; }
+.tt-modal-body li { margin-bottom: 5px; }
+.tt-modal-body strong { color: #ffffff; font-weight: 600; }
+.tt-modal-body code {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  color: #ff9f0a;
+}
+.tt-modal-body pre {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 14px;
+  overflow-x: auto;
+  margin: 10px 0;
+}
+.tt-modal-body blockquote {
+  border-left: 3px solid var(--tt-accent-blue);
+  margin: 10px 0;
+  padding: 6px 14px;
+  background: rgba(0, 113, 227, 0.1);
+  border-radius: 0 8px 8px 0;
+}
+
+/* Loading Skeleton & Pulse */
+.tt-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  gap: 16px;
+  color: var(--tt-text-secondary);
+}
+
+.tt-apple-spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(255, 255, 255, 0.12);
+  border-top-color: var(--tt-accent-purple);
+  border-radius: 50%;
+  animation: tt-spin 0.85s linear infinite;
+}
+
+@keyframes tt-spin {
+  to { transform: rotate(360deg); }
+}
+
+.tt-loading-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  animation: tt-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes tt-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* --------------------------------------------------------------------------
+   Dynamic Island Toast (Apple Confirmation Banner)
+   -------------------------------------------------------------------------- */
+#tec-tools-toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-30px) scale(0.9);
+  z-index: 1000001;
+  background: rgba(20, 20, 24, 0.92);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 8px 18px 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  font-family: var(--tt-font-family);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 320ms var(--tt-spring-easing), opacity 240ms var(--tt-smooth-easing);
+}
+
+#tec-tools-toast.tt-toast-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+.tt-toast-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tt-toast-icon.success {
+  background: var(--tt-accent-green);
+}
+
+.tt-toast-icon.error {
+  background: #ff453a;
+}
+
+.tt-toast-icon.info {
+  background: var(--tt-accent-blue);
+}
+
+.tt-toast-icon svg {
+  width: 14px;
+  height: 14px;
+  fill: #ffffff;
+}
