@@ -17,6 +17,21 @@
   let activeQuestion = null;
   let lastMousePos = { x: window.innerWidth - 180, y: window.innerHeight - 180 };
 
+  const DEFAULT_HOTKEY = {
+    altKey: true,
+    ctrlKey: false,
+    shiftKey: false,
+    metaKey: false,
+    code: 'KeyW',
+    key: 'w',
+    display: 'Alt + W'
+  };
+
+  const ACTION_NUMBERS = {
+    '1': 'anki',
+    '2': 'ia'
+  };
+
   // Ícones SVG minimalistas estilo Apple (SF Symbols)
   const ICONS = {
     wheel: `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>`,
@@ -80,6 +95,7 @@
 
         <!-- Slice Content (Left - Anki) -->
         <div class="tt-wheel-item item-anki">
+          <span class="tt-wheel-num-badge" title="Tecla 1">1</span>
           ${ICONS.anki}
           <span class="tt-wheel-item-title">Enviar Anki</span>
           <span class="tt-wheel-item-desc">Criar card</span>
@@ -87,6 +103,7 @@
 
         <!-- Slice Content (Right - IA) -->
         <div class="tt-wheel-item item-ia">
+          <span class="tt-wheel-num-badge" title="Tecla 2">2</span>
           ${ICONS.ai}
           <span class="tt-wheel-item-title">Explicar IA</span>
           <span class="tt-wheel-item-desc">Análise didática</span>
@@ -185,20 +202,94 @@
       });
     });
 
-    // Atalho global Alt+W para invocar a wheel centralizada na tela
+    // Função para comparar tecla com o atalho configurado pelo usuário
+    function matchesHotkey(e, cfg) {
+      const c = cfg || DEFAULT_HOTKEY;
+
+      const altMatch = Boolean(c.altKey) === e.altKey;
+      const ctrlMatch = Boolean(c.ctrlKey) === e.ctrlKey;
+      const shiftMatch = Boolean(c.shiftKey) === e.shiftKey;
+      const metaMatch = Boolean(c.metaKey) === e.metaKey;
+
+      if (!altMatch || !ctrlMatch || !shiftMatch || !metaMatch) return false;
+
+      // Se o usuário configurou uma tecla única sem modificadores (ex: 'W'), não ativa se estiver digitando em campo de texto
+      const target = e.target;
+      const isInput = target && (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.isContentEditable
+      );
+      const hasModifier = c.altKey || c.ctrlKey || c.metaKey;
+      if (isInput && !hasModifier) {
+        return false;
+      }
+
+      if (c.code && e.code === c.code) return true;
+      if (c.key && e.key.toLowerCase() === c.key.toLowerCase()) return true;
+
+      return false;
+    }
+
+    // Atalhos do teclado na página do TEC Concursos
     window.addEventListener('keydown', (e) => {
-      if (e.altKey && (e.code === 'KeyW' || e.key.toLowerCase() === 'w')) {
+      // 1. Se a Wheel estiver aberta, permite acionar opções imediatamente pelas teclas numéricas (1 a 9)
+      if (overlay.classList.contains('tt-visible')) {
+        let numKey = null;
+        if (e.key >= '1' && e.key <= '9') {
+          numKey = e.key;
+        } else if (e.code && e.code.startsWith('Digit')) {
+          numKey = e.code.slice(5);
+        } else if (e.code && e.code.startsWith('Numpad')) {
+          numKey = e.code.slice(6);
+        }
+
+        if (numKey && ACTION_NUMBERS[numKey]) {
+          e.preventDefault();
+          e.stopPropagation();
+          const action = ACTION_NUMBERS[numKey];
+          closeWheel();
+          handleWheelAction(action);
+          return;
+        }
+      }
+
+      // 2. Atalho configurável para abrir/fechar a wheel (funciona exclusivamente no tecconcursos.com.br)
+      if (matchesHotkey(e, currentConfig?.hotkeyConfig)) {
         e.preventDefault();
+        e.stopPropagation();
         if (overlay.classList.contains('tt-visible')) {
           closeWheel();
         } else {
           openWheel();
         }
-      } else if (e.key === 'Escape') {
+        return;
+      }
+
+      // 3. Tecla Escape para fechar Wheel ou Modal de IA
+      if (e.key === 'Escape') {
         if (overlay.classList.contains('tt-visible')) closeWheel();
         if (aiModal.classList.contains('tt-visible')) closeAiModal();
       }
     });
+
+    // Atualiza configurações dinamicamente caso sejam alteradas na aba de Opções
+    if (extAPI.storage && extAPI.storage.onChanged) {
+      extAPI.storage.onChanged.addListener((changes, area) => {
+        if (area === 'sync' || area === 'local') {
+          extAPI.runtime.sendMessage({ action: 'GET_CONFIG' }).then(res => {
+            if (res && res.success && res.config) {
+              currentConfig = res.config;
+              if (currentConfig.showDockPill === false) {
+                dock.classList.add('tt-hidden');
+              } else {
+                dock.classList.remove('tt-hidden');
+              }
+            }
+          }).catch(() => {});
+        }
+      });
+    }
 
     // Modal IA: Fechar
     aiCloseBtn.addEventListener('click', closeAiModal);

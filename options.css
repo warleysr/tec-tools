@@ -399,85 +399,44 @@ input:checked + .toggle-slider:before {
   transform: translateX(20px);
 }
 
-.badge-shortcut {
-  font-family: ui-monospace, Menlo, monospace;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 6px;
+/* Hotkey Recorder */
+.btn-hotkey-recorder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 100px;
+  padding: 6px 14px;
+  background: var(--bg-input);
   border: 1px solid var(--border-color);
-}
-
-/* Donut Preview Card */
-.wheel-preview-card {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 10px 0;
-}
-
-.preview-donut {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  position: relative;
-  background: #111;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.4);
-  overflow: hidden;
-}
-
-.preview-donut .slice {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  font-weight: 600;
-  color: white;
-}
-
-.preview-donut .slice.left {
-  left: 0;
-  background: var(--accent-blue);
-}
-
-.preview-donut .slice.right {
-  right: 0;
-  background: var(--accent-purple);
-}
-
-.preview-donut .hub {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #25252b;
-  border: 1px solid var(--border-color);
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 8px;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.preview-text strong {
-  display: block;
+  border-radius: 8px;
+  color: var(--text-main);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   font-size: 13px;
-  margin-bottom: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: all 160ms ease;
+  white-space: nowrap;
 }
 
-.preview-text p {
+.btn-hotkey-recorder:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.btn-hotkey-recorder:focus,
+.btn-hotkey-recorder.recording {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.3);
+  background: rgba(0, 113, 227, 0.15);
+  color: #ffffff;
+}
+
+.btn-sm {
+  padding: 6px 12px;
   font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.4;
+  border-radius: 8px;
 }
 
 /* Footer Bar */

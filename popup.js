@@ -42,10 +42,18 @@ function init() {
     });
   }
 
-  // 2. Ajusta textos conforme a aba ativa de forma não-bloqueante
+  // 2. Ajusta textos e atalhos conforme configuração e aba ativa
+  const popupShortcut = document.getElementById('popupShortcut');
+  extAPI.runtime.sendMessage({ action: 'GET_CONFIG' }).then(res => {
+    if (res?.success && res.config?.hotkeyConfig?.display) {
+      const display = res.config.hotkeyConfig.display;
+      if (popupShortcut) popupShortcut.textContent = display;
+    }
+  }).catch(() => {});
+
   extAPI.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
     if (tab && tab.url && tab.url.includes('tecconcursos.com.br')) {
-      if (btnOpenWheel) btnOpenWheel.textContent = '✨ Abrir Wheel Menu (Alt+W)';
+      if (btnOpenWheel) btnOpenWheel.textContent = '✨ Abrir Wheel Menu';
       if (btnGoTec) btnGoTec.style.display = 'block';
     } else {
       if (btnOpenWheel) btnOpenWheel.textContent = 'Ir para o TEC Concursos';

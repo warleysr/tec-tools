@@ -22,6 +22,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
+  const DEFAULT_HOTKEY = {
+    altKey: true,
+    ctrlKey: false,
+    shiftKey: false,
+    metaKey: false,
+    code: 'KeyW',
+    key: 'w',
+    display: 'Alt + W'
+  };
+
+  let hotkeyConfig = { ...DEFAULT_HOTKEY };
+
+  function formatHotkeyDisplay(cfg) {
+    const parts = [];
+    if (cfg.ctrlKey) parts.push('Ctrl');
+    if (cfg.altKey) parts.push('Alt');
+    if (cfg.shiftKey) parts.push('Shift');
+    if (cfg.metaKey) parts.push('Cmd');
+
+    let keyLabel = '';
+    if (cfg.code && cfg.code.startsWith('Key')) {
+      keyLabel = cfg.code.slice(3).toUpperCase();
+    } else if (cfg.code && cfg.code.startsWith('Digit')) {
+      keyLabel = cfg.code.slice(5);
+    } else if (cfg.code && cfg.code.startsWith('Numpad')) {
+      keyLabel = 'Num ' + cfg.code.slice(6);
+    } else if (cfg.code === 'Space') {
+      keyLabel = 'Espaço';
+    } else if (cfg.key && cfg.key.length === 1) {
+      keyLabel = cfg.key.toUpperCase();
+    } else if (cfg.key) {
+      keyLabel = cfg.key.charAt(0).toUpperCase() + cfg.key.slice(1);
+    } else if (cfg.code) {
+      keyLabel = cfg.code;
+    }
+    if (keyLabel) parts.push(keyLabel);
+
+    return parts.length ? parts.join(' + ') : 'Alt + W';
+  }
+
+  function updateHotkeyUI(cfg) {
+    const badge = document.getElementById('hotkeyBadge');
+    if (!badge) return;
+    badge.textContent = cfg?.display || formatHotkeyDisplay(cfg || DEFAULT_HOTKEY);
+  }
+
   // Slider Temperature
   const tempSlider = document.getElementById('aiTemperature');
   const tempVal = document.getElementById('aiTempVal');
@@ -48,6 +94,84 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('aiPrompt').value = c.aiPrompt || '';
 
     document.getElementById('showDockPill').checked = Boolean(c.showDockPill);
+
+    if (c.hotkeyConfig) {
+      hotkeyConfig = { ...DEFAULT_HOTKEY, ...c.hotkeyConfig };
+    }
+    updateHotkeyUI(hotkeyConfig);
+  }
+
+  // Hotkey Recorder
+  const hotkeyRecorderBtn = document.getElementById('hotkeyRecorderBtn');
+  const btnResetHotkey = document.getElementById('btnResetHotkey');
+  let isRecording = false;
+
+  if (hotkeyRecorderBtn) {
+    hotkeyRecorderBtn.addEventListener('click', () => {
+      isRecording = true;
+      hotkeyRecorderBtn.classList.add('recording');
+      document.getElementById('hotkeyBadge').textContent = 'Pressione o atalho...';
+      hotkeyRecorderBtn.focus();
+    });
+
+    hotkeyRecorderBtn.addEventListener('keydown', (e) => {
+      if (!isRecording) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Escape cancela
+      if (e.key === 'Escape') {
+        isRecording = false;
+        hotkeyRecorderBtn.classList.remove('recording');
+        updateHotkeyUI(hotkeyConfig);
+        return;
+      }
+
+      // Se for tecla modificadora isolada
+      const isModifier = ['Control', 'Alt', 'Shift', 'Meta'].includes(e.key);
+      if (isModifier) {
+        const tempMods = [];
+        if (e.ctrlKey) tempMods.push('Ctrl');
+        if (e.altKey) tempMods.push('Alt');
+        if (e.shiftKey) tempMods.push('Shift');
+        if (e.metaKey) tempMods.push('Cmd');
+        document.getElementById('hotkeyBadge').textContent = tempMods.length ? tempMods.join(' + ') + ' + ...' : 'Pressione...';
+        return;
+      }
+
+      // Tecla final registrada
+      const newConfig = {
+        altKey: e.altKey,
+        ctrlKey: e.ctrlKey,
+        shiftKey: e.shiftKey,
+        metaKey: e.metaKey,
+        code: e.code,
+        key: e.key
+      };
+      newConfig.display = formatHotkeyDisplay(newConfig);
+      hotkeyConfig = newConfig;
+
+      isRecording = false;
+      hotkeyRecorderBtn.classList.remove('recording');
+      updateHotkeyUI(hotkeyConfig);
+      saveSettings();
+    });
+
+    hotkeyRecorderBtn.addEventListener('blur', () => {
+      if (isRecording) {
+        isRecording = false;
+        hotkeyRecorderBtn.classList.remove('recording');
+        updateHotkeyUI(hotkeyConfig);
+      }
+    });
+  }
+
+  if (btnResetHotkey) {
+    btnResetHotkey.addEventListener('click', () => {
+      hotkeyConfig = { ...DEFAULT_HOTKEY };
+      updateHotkeyUI(hotkeyConfig);
+      saveSettings();
+    });
   }
 
   // Tenta carregar baralhos e modelos automaticamente se o Anki estiver aberto
@@ -85,7 +209,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       aiTemperature: parseFloat(tempSlider.value) || 0.7,
       aiPrompt: document.getElementById('aiPrompt').value,
 
-      showDockPill: document.getElementById('showDockPill').checked !== false
+      showDockPill: document.getElementById('showDockPill').checked !== false,
+      hotkeyConfig: hotkeyConfig
     };
 
     await extAPI.storage.sync.set(config);

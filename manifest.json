@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TEC-Tools",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Wheel menu estilo Apple para tecconcursos.com.br com envio para Anki e Explicação com IA",
   "browser_specific_settings": {
     "gecko": {

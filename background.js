@@ -11,6 +11,15 @@ const DEFAULT_CONFIG = {
   wheelTrigger: "button-and-hotkey",
   showDockPill: true,
   hotkey: "KeyW",
+  hotkeyConfig: {
+    altKey: true,
+    ctrlKey: false,
+    shiftKey: false,
+    metaKey: false,
+    code: "KeyW",
+    key: "w",
+    display: "Alt + W"
+  },
   ankiUrl: "http://127.0.0.1:8765",
   ankiDeck: "TEC Concursos",
   ankiModel: "Básico",

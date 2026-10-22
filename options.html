@@ -16,7 +16,7 @@
         </div>
         <div class="app-info">
           <h2>TEC-Tools</h2>
-          <span>v1.0.2</span>
+          <span>v1.0.3</span>
         </div>
       </div>
 
@@ -201,17 +201,20 @@
         <div class="settings-group">
           <div class="setting-row">
             <div class="setting-meta">
-              <label>Atalho Global do Teclado</label>
-              <span>Pressione <kbd>Alt</kbd> + <kbd>W</kbd> em qualquer questão no tecconcursos.com.br para abrir a Wheel instantaneamente.</span>
+              <label for="hotkeyRecorderBtn">Atalho no TEC Concursos</label>
+              <span>Clique no botão para gravar uma tecla única ou combinação personalizada (ex: <kbd>Alt + W</kbd>, <kbd>W</kbd>, <kbd>Ctrl + Espaço</kbd>, <kbd>F2</kbd>). Ativo exclusivamente no tecconcursos.com.br.</span>
             </div>
-            <div class="setting-control">
-              <span class="badge-shortcut">Alt + W</span>
+            <div class="setting-control control-row">
+              <button type="button" class="btn-hotkey-recorder" id="hotkeyRecorderBtn" title="Clique para gravar novo atalho">
+                <span id="hotkeyBadge">Alt + W</span>
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" id="btnResetHotkey" title="Restaurar padrão (Alt + W)">Padrão</button>
             </div>
           </div>
 
           <div class="setting-row">
             <div class="setting-meta">
-              <label>Botão Flutuante (Dock Icon)</label>
+              <label for="showDockPill">Botão Flutuante (Dock Icon)</label>
               <span>Exibir ícone flutuante discreto no canto inferior direito da tela.</span>
             </div>
             <div class="setting-control">
@@ -219,21 +222,6 @@
                 <input type="checkbox" id="showDockPill" />
                 <span class="toggle-slider"></span>
               </label>
-            </div>
-          </div>
-        </div>
-
-        <div class="settings-group">
-          <div class="group-title">Apresentação da Wheel</div>
-          <div class="wheel-preview-card">
-            <div class="preview-donut">
-              <div class="slice left"><span>🎴 Anki</span></div>
-              <div class="slice right"><span>✨ IA</span></div>
-              <div class="hub"><span>Wheel</span></div>
-            </div>
-            <div class="preview-text">
-              <strong>Menu Donut estilo filee.sh</strong>
-              <p>Inspirado no design físico e fluído dos sistemas Apple, com feedback tátil de escala e efeito de vidro fosco (glassmorphism).</p>
             </div>
           </div>
         </div>

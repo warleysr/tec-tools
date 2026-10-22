@@ -10,7 +10,8 @@ Extensão para Mozilla Firefox e Google Chrome projetada especificamente para o 
 - **Design Físico & Fluido**: Inspirado na interface física do Apple Design System e do filee.sh, com materiais em vidro fosco (*glassmorphism*, `backdrop-filter: blur(28px)`), iluminação interna e resposta instantânea no toque/clique (`scale: 0.96` no `:active`).
 - **Ativação Rápida**:
   - Pelo botão flutuante (*Dock Pill*) no canto inferior da página.
-  - Pelo atalho global do teclado: <kbd>Alt</kbd> + <kbd>W</kbd> (abre a roda diretamente sob o cursor do mouse).
+  - Pelo atalho customizável do teclado (padrão: <kbd>Alt</kbd> + <kbd>W</kbd>, configurável nas Opções para tecla única ou combinações). Funciona exclusivamente no TEC Concursos.
+  - **Ativação por Teclado Numérico (1 a 9)**: quando o menu radial está aberto, pressione <kbd>1</kbd> para enviar ao Anki ou <kbd>2</kbd> para explicar com IA.
   - Pressionar <kbd>Esc</kbd> ou clicar fora fecha a roda suavemente com animação de mola (*spring*).
 
 ### 2. 🎴 Enviar para o Anki (via AnkiConnect)
