@@ -6,6 +6,9 @@
 (function () {
   'use strict';
 
+  // Suporte cross-browser (Firefox WebExtensions & Chromium)
+  const extAPI = typeof browser !== 'undefined' ? browser : chrome;
+
   // Previne injeção duplicada
   if (window.__TEC_TOOLS_LOADED__) return;
   window.__TEC_TOOLS_LOADED__ = true;
@@ -27,7 +30,7 @@
   // Inicialização e carregamento de configurações
   async function init() {
     try {
-      const res = await chrome.runtime.sendMessage({ action: 'GET_CONFIG' });
+      const res = await extAPI.runtime.sendMessage({ action: 'GET_CONFIG' });
       if (res && res.success) {
         currentConfig = res.config;
       }
@@ -39,11 +42,11 @@
 
   // Criação dos elementos DOM da extensão
   function injectUI() {
-    // 1. Floating Dock Trigger (Apenas ícone, desativado por padrão)
+    // 1. Floating Dock Trigger (Visível por padrão com ícone minimalista)
     const dock = document.createElement('div');
     dock.id = 'tec-tools-dock';
     dock.title = 'TEC-Tools (Alt+W)';
-    if (!currentConfig || !currentConfig.showDockPill) {
+    if (currentConfig && currentConfig.showDockPill === false) {
       dock.classList.add('tt-hidden');
     }
     dock.innerHTML = `<div class="tt-dock-icon">${ICONS.wheel}</div>`;
@@ -218,6 +221,17 @@
 
     // Direct Manipulation: Torna o modal arrastável respeitando o grabOffset (Apple HIG)
     setupDraggableModal(aiModal);
+
+    // Escuta comandos vindos do popup ou do atalho nativo do navegador
+    extAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if (request.action === 'OPEN_WHEEL') {
+        openWheel();
+        sendResponse({ success: true });
+      } else if (request.action === 'CLOSE_WHEEL') {
+        closeWheel();
+        sendResponse({ success: true });
+      }
+    });
   }
 
   // Abre a Wheel sempre centralizada na tela
@@ -376,7 +390,7 @@
   // --------------------------------------------------------------------------
   async function handleSendToAnki(q) {
     if (!currentConfig) {
-      const res = await chrome.runtime.sendMessage({ action: 'GET_CONFIG' });
+      const res = await extAPI.runtime.sendMessage({ action: 'GET_CONFIG' });
       currentConfig = res?.config || {};
     }
 
@@ -425,7 +439,7 @@
     showToast('Enviando card para o AnkiConnect...', 'info');
 
     try {
-      const response = await chrome.runtime.sendMessage({
+      const response = await extAPI.runtime.sendMessage({
         action: 'ANKI_ADD_NOTE',
         note: {
           front,
@@ -467,47 +481,70 @@
     requestAiExplanation(q);
   }
 
-  async function requestAiExplanation(q) {
+  function requestAiExplanation(q) {
     const content = document.getElementById('tt-ai-content');
+    const badge = document.getElementById('tt-ai-badge');
 
-    try {
-      const response = await chrome.runtime.sendMessage({
-        action: 'AI_EXPLAIN',
-        question: {
-          id: q.id,
-          materia: q.materia,
-          assunto: q.assunto,
-          banca: q.banca,
-          ano: q.ano,
-          orgao: q.orgao,
-          enunciado: cleanText(q.enunciado),
-          alternativasCompletas: q.alternativasCompletas,
-          gabarito: q.gabarito,
-          gabaritoTexto: q.gabaritoTexto,
-          url: q.url
+    let fullText = '';
+    let hasStarted = false;
+
+    // Conecta à porta de streaming de IA
+    const port = extAPI.runtime.connect({ name: 'AI_STREAM_CHANNEL' });
+
+    port.postMessage({
+      action: 'START_AI_STREAM',
+      question: {
+        id: q.id,
+        materia: q.materia,
+        assunto: q.assunto,
+        banca: q.banca,
+        ano: q.ano,
+        orgao: q.orgao,
+        enunciado: cleanText(q.enunciado),
+        alternativasCompletas: q.alternativasCompletas,
+        gabarito: q.gabarito,
+        gabaritoTexto: q.gabaritoTexto,
+        url: q.url
+      }
+    });
+
+    port.onMessage.addListener((msg) => {
+      if (msg.type === 'CHUNK') {
+        if (!hasStarted) {
+          hasStarted = true;
+          content.innerHTML = '';
+          badge.textContent = `Q.${q.id} · ${q.materia} (Transmitindo...)`;
         }
-      });
-
-      if (response && response.success) {
-        content.innerHTML = renderMarkdown(response.explanation);
-      } else {
+        fullText += msg.chunk;
+        content.innerHTML = renderMarkdown(fullText);
+        content.scrollTop = content.scrollHeight;
+      } else if (msg.type === 'DONE') {
+        badge.textContent = `Q.${q.id} · ${q.materia}`;
+        try { port.disconnect(); } catch {}
+      } else if (msg.type === 'ERROR') {
+        badge.textContent = 'Erro';
         content.innerHTML = `
           <div style="padding: 24px; text-align: center; color: #ff6b6b;">
             <p><strong>Não foi possível gerar a explicação:</strong></p>
-            <p>${escapeHtml(response.error || 'Erro desconhecido')}</p>
+            <p style="margin-top: 8px;">${escapeHtml(msg.error || 'Erro desconhecido')}</p>
             <p style="margin-top: 14px; font-size: 12px; color: rgba(255,255,255,0.7);">
               Verifique sua chave de API e configurações no menu de opções da extensão.
             </p>
           </div>
         `;
+        try { port.disconnect(); } catch {}
       }
-    } catch (err) {
-      content.innerHTML = `
-        <div style="padding: 24px; text-align: center; color: #ff6b6b;">
-          <p><strong>Erro de conexão:</strong> ${escapeHtml(err.message)}</p>
-        </div>
-      `;
-    }
+    });
+
+    port.onDisconnect.addListener(() => {
+      if (!hasStarted && !content.innerHTML.includes('Não foi possível')) {
+        content.innerHTML = `
+          <div style="padding: 24px; text-align: center; color: #ff6b6b;">
+            <p><strong>Canal de streaming desconectado.</strong></p>
+          </div>
+        `;
+      }
+    });
   }
 
   // --------------------------------------------------------------------------

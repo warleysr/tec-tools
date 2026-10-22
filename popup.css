@@ -15,12 +15,24 @@
   box-sizing: border-box;
 }
 
+html {
+  width: 320px;
+  min-height: 260px;
+  margin: 0;
+  padding: 0;
+  background: var(--bg-color);
+}
+
 body {
   width: 320px;
+  min-height: 260px;
+  margin: 0;
+  padding: 14px;
   background: var(--bg-color);
   color: var(--text);
   font-family: var(--font);
-  padding: 14px;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .popup-container {
@@ -213,6 +225,12 @@ kbd {
   opacity: 0.9;
 }
 
-.btn-action:active {
-  transform: scale(0.98);
+.btn-action.secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.btn-action.secondary:hover {
+  background: rgba(255, 255, 255, 0.14);
 }

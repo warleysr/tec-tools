@@ -1,25 +1,36 @@
 {
   "manifest_version": 3,
   "name": "TEC-Tools",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Wheel menu estilo Apple para tecconcursos.com.br com envio para Anki e Explicação com IA",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "tec-tools@extension",
+      "strict_min_version": "109.0"
+    }
+  },
   "permissions": [
     "storage",
     "activeTab"
   ],
   "host_permissions": [
     "https://*.tecconcursos.com.br/*",
+    "https://tecconcursos.com.br/*",
     "http://127.0.0.1:8765/*",
     "http://localhost:8765/*",
     "<all_urls>"
   ],
   "background": {
+    "scripts": [
+      "background.js"
+    ],
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
       "matches": [
-        "https://*.tecconcursos.com.br/*"
+        "https://*.tecconcursos.com.br/*",
+        "https://tecconcursos.com.br/*"
       ],
       "js": [
         "content.js"
@@ -38,6 +49,14 @@
       "32": "icons/icon32.png",
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
+    }
+  },
+  "commands": {
+    "open-wheel": {
+      "suggested_key": {
+        "default": "Alt+W"
+      },
+      "description": "Abrir o menu radial TEC-Tools na questão atual"
     }
   },
   "options_ui": {

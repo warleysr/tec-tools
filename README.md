@@ -1,6 +1,6 @@
 # ⚡ TEC-Tools
 
-Extensão para Google Chrome projetada especificamente para o [TEC Concursos](https://www.tecconcursos.com.br), adicionando um menu radial circular em donut (**Wheel**, inspirado no [filee.sh](https://filee.sh/)) com estética e física fluidas baseadas no **Apple Design System (macOS / iOS)**.
+Extensão para Mozilla Firefox e Google Chrome projetada especificamente para o [TEC Concursos](https://www.tecconcursos.com.br), adicionando um menu radial circular em donut (**Wheel**, inspirado no [filee.sh](https://filee.sh/)) com estética e física fluidas baseadas no **Apple Design System (macOS / iOS)**.
 
 ---
 
@@ -35,20 +35,28 @@ Extensão para Google Chrome projetada especificamente para o [TEC Concursos](ht
 
 ---
 
-## 🚀 Como Instalar no Google Chrome
+## 🦊 Como Instalar no Mozilla Firefox
 
-1. Clone ou baixe este repositório para o seu computador:
-   ```bash
-   git clone https://github.com/warleysr/tec-tools.git
+1. Abra o **Mozilla Firefox** e digite na barra de endereços:
    ```
-2. Abra o Google Chrome e acesse:
+   about:debugging#/runtime/this-firefox
+   ```
+2. Clique no botão **Carregar extensão temporária...** (*Load Temporary Add-on...*).
+3. Navegue até a pasta da extensão (`tec-tools`) e selecione o arquivo **`manifest.json`**.
+4. Pronto! A extensão estará carregada e ativa com ID permanente (`tec-tools@extension`) em todas as páginas do `tecconcursos.com.br`.
+
+---
+
+## 🚀 Como Instalar no Google Chrome / Brave / Edge
+
+1. Abra o navegador e acesse:
    ```
    chrome://extensions/
    ```
-3. Ative a opção **Modo do desenvolvedor** no canto superior direito.
-4. Clique em **Carregar sem compactação** (*Load unpacked*).
-5. Selecione a pasta da extensão (`tec-tools`).
-6. Pronto! A extensão estará ativa em todas as páginas do `tecconcursos.com.br`.
+2. Ative a opção **Modo do desenvolvedor** no canto superior direito.
+3. Clique em **Carregar sem compactação** (*Load unpacked*).
+4. Selecione a pasta da extensão (`tec-tools`).
+5. Pronto! A extensão estará ativa em todas as páginas do `tecconcursos.com.br`.
 
 ---
 

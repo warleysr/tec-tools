@@ -1,6 +1,9 @@
 /**
  * TEC-Tools — Options Page Controller
+ * Compatível com Firefox WebExtensions e Chromium.
  */
+
+const extAPI = typeof browser !== 'undefined' ? browser : chrome;
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Tabs Navigation
@@ -27,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // Load Config
-  const res = await chrome.runtime.sendMessage({ action: 'GET_CONFIG' });
+  const res = await extAPI.runtime.sendMessage({ action: 'GET_CONFIG' });
   if (res && res.success && res.config) {
     const c = res.config;
     document.getElementById('ankiUrl').value = c.ankiUrl || 'http://127.0.0.1:8765';
@@ -36,10 +39,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('ankiTemplateFront').value = c.ankiTemplateFront || '';
     document.getElementById('ankiTemplateBack').value = c.ankiTemplateBack || '';
 
-    document.getElementById('aiUrl').value = c.aiUrl || 'https://api.openai.com/v1/chat/completions';
+    document.getElementById('aiUrl').value = c.aiUrl || 'https://generativelanguage.googleapis.com/v1beta/interactions';
     document.getElementById('aiKey').value = c.aiKey || '';
-    document.getElementById('aiHeaders').value = c.aiHeaders || '';
-    document.getElementById('aiModel').value = c.aiModel || 'gpt-4o-mini';
+    document.getElementById('aiHeaders').value = c.aiHeaders || 'Api-Revision: 2026-05-20';
+    document.getElementById('aiModel').value = c.aiModel || 'gemini-3.5-flash-lite';
     tempSlider.value = c.aiTemperature !== undefined ? c.aiTemperature : 0.7;
     tempVal.textContent = tempSlider.value;
     document.getElementById('aiPrompt').value = c.aiPrompt || '';
@@ -50,14 +53,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Tenta carregar baralhos e modelos automaticamente se o Anki estiver aberto
   async function carregarListasAnki(url) {
     try {
-      const decksRes = await chrome.runtime.sendMessage({ action: 'TEST_ANKI', url });
+      const decksRes = await extAPI.runtime.sendMessage({ action: 'TEST_ANKI', url });
       if (decksRes && decksRes.success) {
         if (Array.isArray(decksRes.decks)) {
           const deckDl = document.getElementById('ankiDeckList');
           deckDl.innerHTML = decksRes.decks.map(d => `<option value="${d}">`).join('');
         }
       }
-      const modelsRes = await chrome.runtime.sendMessage({ action: 'ANKI_GET_MODELS' });
+      const modelsRes = await extAPI.runtime.sendMessage({ action: 'ANKI_GET_MODELS' });
       if (modelsRes && modelsRes.success && Array.isArray(modelsRes.models)) {
         const modelDl = document.getElementById('ankiModelList');
         modelDl.innerHTML = modelsRes.models.map(m => `<option value="${m}">`).join('');
@@ -82,10 +85,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       aiTemperature: parseFloat(tempSlider.value) || 0.7,
       aiPrompt: document.getElementById('aiPrompt').value,
 
-      showDockPill: document.getElementById('showDockPill').checked
+      showDockPill: document.getElementById('showDockPill').checked !== false
     };
 
-    await chrome.storage.sync.set(config);
+    await extAPI.storage.sync.set(config);
     const saveStatus = document.getElementById('saveStatus');
     saveStatus.textContent = '✓ Configurações salvas com sucesso!';
     saveStatus.style.color = '#34c759';
@@ -113,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     ankiStatusMsg.classList.add('hidden');
 
     try {
-      const response = await chrome.runtime.sendMessage({
+      const response = await extAPI.runtime.sendMessage({
         action: 'TEST_ANKI',
         url
       });
@@ -121,7 +124,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       ankiStatusMsg.classList.remove('hidden');
       if (response && response.success) {
         ankiStatusMsg.className = 'status-badge success';
-        ankiStatusMsg.textContent = `✓ Conectado ao Anki! Versão da API: ${response.version}. Baralhos encontrados: ${response.decks.length}.`;
+        const deckCount = Array.isArray(response.decks) ? response.decks.length : 'OK';
+        ankiStatusMsg.textContent = `✓ Conectado ao Anki! Versão da API: ${response.version}. Baralhos encontrados: ${deckCount}.`;
         carregarListasAnki(url);
       } else {
         ankiStatusMsg.className = 'status-badge error';

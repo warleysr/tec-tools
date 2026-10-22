@@ -414,6 +414,8 @@
   font-size: 14px;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.92);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
 .tt-modal-body::-webkit-scrollbar {
