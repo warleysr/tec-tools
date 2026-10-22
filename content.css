@@ -90,12 +90,14 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity 200ms var(--tt-smooth-easing);
+  transition: opacity 200ms var(--tt-smooth-easing), visibility 200ms var(--tt-smooth-easing);
 }
 
 #tec-tools-wheel-overlay.tt-visible {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
 }
 
@@ -111,14 +113,17 @@
   border-radius: 50%;
   transform: translate(-50%, -50%) scale(0.65) rotate(-10deg);
   opacity: 0;
-  transition: transform 280ms var(--tt-spring-easing), opacity 200ms var(--tt-smooth-easing);
+  visibility: hidden;
+  transition: transform 280ms var(--tt-spring-easing), opacity 200ms var(--tt-smooth-easing), visibility 200ms var(--tt-smooth-easing);
   user-select: none;
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 #tec-tools-wheel-overlay.tt-visible #tec-tools-wheel {
   transform: translate(-50%, -50%) scale(1) rotate(0deg);
   opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 /* Center Hub */
@@ -140,9 +145,13 @@
   align-items: center;
   justify-content: center;
   z-index: 10;
-  pointer-events: auto;
+  pointer-events: none;
   cursor: pointer;
   transition: transform 140ms ease, background 140ms ease;
+}
+
+#tec-tools-wheel-overlay.tt-visible .tt-wheel-hub {
+  pointer-events: auto;
 }
 
 .tt-wheel-hub:hover {
@@ -177,8 +186,13 @@
   fill: rgba(30, 30, 36, 0.78);
   stroke: rgba(255, 255, 255, 0.18);
   stroke-width: 1.5;
+  pointer-events: none;
   transition: fill 180ms ease, stroke 180ms ease, filter 180ms ease, transform 180ms var(--tt-spring-easing);
   transform-origin: 145px 145px;
+}
+
+#tec-tools-wheel-overlay.tt-visible .tt-wheel-slice {
+  pointer-events: auto;
 }
 
 .tt-wheel-slice:hover {
@@ -282,14 +296,16 @@
   font-family: var(--tt-font-family);
   color: var(--tt-text-primary);
   opacity: 0;
+  visibility: hidden;
   transform: scale(0.92) translateY(12px);
   pointer-events: none;
-  transition: opacity 220ms var(--tt-smooth-easing), transform 240ms var(--tt-spring-easing);
+  transition: opacity 220ms var(--tt-smooth-easing), transform 240ms var(--tt-spring-easing), visibility 220ms var(--tt-smooth-easing);
   resize: both;
 }
 
 #tec-tools-ai-modal.tt-visible {
   opacity: 1;
+  visibility: visible;
   transform: scale(1) translateY(0);
   pointer-events: auto;
 }

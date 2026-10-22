@@ -163,18 +163,21 @@
 
     // Clique no Hub fecha a Wheel
     hub.addEventListener('click', (e) => {
+      if (!overlay.classList.contains('tt-visible')) return;
       e.stopPropagation();
       closeWheel();
     });
 
     // Clique fora fecha a Wheel
     overlay.addEventListener('click', (e) => {
+      if (!overlay.classList.contains('tt-visible')) return;
       if (e.target === overlay) closeWheel();
     });
 
     // Ações dos setores da Wheel
     wheel.querySelectorAll('.tt-wheel-slice').forEach((slice) => {
       slice.addEventListener('click', (e) => {
+        if (!overlay.classList.contains('tt-visible')) return;
         e.stopPropagation();
         const action = slice.getAttribute('data-action');
         closeWheel();
