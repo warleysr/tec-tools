@@ -10,15 +10,15 @@ const DEFAULT_CONFIG = {
   wheelPosition: "center",
   wheelTrigger: "button-and-hotkey",
   showDockPill: true,
-  hotkey: "KeyW",
+  hotkey: "KeyA",
   hotkeyConfig: {
-    altKey: true,
+    altKey: false,
     ctrlKey: false,
     shiftKey: false,
     metaKey: false,
-    code: "KeyW",
-    key: "w",
-    display: "Alt + W"
+    code: "KeyA",
+    key: "a",
+    display: "A"
   },
   ankiUrl: "http://127.0.0.1:8765",
   ankiDeck: "TEC Concursos",
@@ -82,6 +82,51 @@ async function callAnkiConnect(url, action, params = {}) {
     }
     throw err;
   }
+}
+
+// Salva imagens no acervo de mídia do Anki para permitir renderização 100% offline
+async function processAnkiImages(html, ankiUrl) {
+  if (!html || !html.includes('<img')) return html;
+
+  const imgRegex = /<img\b([^>]*?)\bsrc=["']?([^"'\s>]+)["']?([^>]*?)>/gi;
+  let match;
+  const images = [];
+
+  while ((match = imgRegex.exec(html)) !== null) {
+    images.push({
+      fullTag: match[0],
+      beforeSrc: match[1],
+      src: match[2],
+      afterSrc: match[3]
+    });
+  }
+
+  let resultHtml = html;
+  for (let i = 0; i < images.length; i++) {
+    const { fullTag, beforeSrc, src, afterSrc } = images[i];
+    if (/^https?:\/\//i.test(src) || /^data:image\//i.test(src)) {
+      try {
+        const cleanUrl = src.split('?')[0].split('#')[0];
+        let ext = cleanUrl.match(/\.(png|jpe?g|gif|webp|svg|ico)$/i)?.[1]?.toLowerCase() || 'png';
+        if (ext === 'jpeg') ext = 'jpg';
+        const filename = `tec_${Date.now()}_${i}.${ext}`;
+
+        if (src.startsWith('data:image/')) {
+          const base64Data = src.split(',')[1];
+          await callAnkiConnect(ankiUrl, "storeMediaFile", { filename, data: base64Data });
+        } else {
+          await callAnkiConnect(ankiUrl, "storeMediaFile", { filename, url: src });
+        }
+
+        const newTag = `<img${beforeSrc}src="${filename}"${afterSrc}>`;
+        resultHtml = resultHtml.replace(fullTag, newTag);
+      } catch (err) {
+        console.warn('Erro ao salvar imagem no Anki via storeMediaFile:', err);
+      }
+    }
+  }
+
+  return resultHtml;
 }
 
 // Helper para preparar requisições de IA (compatível com Gemini Interactions e OpenAI)
@@ -323,8 +368,12 @@ extAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
           const modelFields = (await callAnkiConnect(config.ankiUrl, "modelFieldNames", { modelName: targetModel }).catch(() => [])) || [];
 
           // 3. Monta o payload de campos garantindo que o primeiro campo NUNCA fique vazio
-          const frontContent = (noteData.front && noteData.front.trim()) || noteData.enunciado || "Questão TEC Concursos";
-          const backContent = (noteData.back && noteData.back.trim()) || noteData.gabarito || "Gabarito TEC Concursos";
+          let frontContent = (noteData.front && noteData.front.trim()) || noteData.enunciado || "Questão TEC Concursos";
+          let backContent = (noteData.back && noteData.back.trim()) || noteData.gabarito || "Gabarito TEC Concursos";
+
+          // Baixa imagens e salva no Anki via storeMediaFile para exibição e funcionamento offline
+          frontContent = await processAnkiImages(frontContent, config.ankiUrl);
+          backContent = await processAnkiImages(backContent, config.ankiUrl);
 
           const fields = {};
           if (modelFields.length >= 2) {

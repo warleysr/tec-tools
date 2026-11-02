@@ -108,8 +108,8 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  width: 290px;
-  height: 290px;
+  width: 320px;
+  height: 320px;
   border-radius: 50%;
   transform: translate(-50%, -50%) scale(0.65) rotate(-10deg);
   opacity: 0;
@@ -132,8 +132,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 70px;
-  height: 70px;
+  width: 66px;
+  height: 66px;
   border-radius: 50%;
   background: var(--tt-glass-bg);
   backdrop-filter: blur(32px) saturate(200%);
@@ -188,7 +188,7 @@
   stroke-width: 1.5;
   pointer-events: none;
   transition: fill 180ms ease, stroke 180ms ease, filter 180ms ease, transform 180ms var(--tt-spring-easing);
-  transform-origin: 145px 145px;
+  transform-origin: 160px 160px;
 }
 
 #tec-tools-wheel-overlay.tt-visible .tt-wheel-slice {
@@ -196,32 +196,32 @@
 }
 
 .tt-wheel-slice:hover {
-  stroke: rgba(255, 255, 255, 0.45);
-  transform: scale(1.04);
+  stroke: rgba(255, 255, 255, 0.65);
+  stroke-width: 2px;
 }
 
 .tt-wheel-slice.slice-anki:hover {
-  fill: rgba(0, 113, 227, 0.75);
-  filter: drop-shadow(0 0 16px rgba(0, 113, 227, 0.6));
+  fill: rgba(0, 113, 227, 0.9);
+  filter: drop-shadow(0 0 18px rgba(0, 113, 227, 0.7));
 }
 
 .tt-wheel-slice.slice-ia:hover {
-  fill: rgba(175, 82, 222, 0.75);
-  filter: drop-shadow(0 0 16px rgba(175, 82, 222, 0.6));
+  fill: rgba(175, 82, 222, 0.9);
+  filter: drop-shadow(0 0 18px rgba(175, 82, 222, 0.7));
 }
 
 .tt-wheel-slice:active {
-  transform: scale(0.98);
+  filter: brightness(0.92);
 }
 
-/* Slices Content (Icons & Labels inside wheel) */
+/* Slices Content (Icons & Labels inside wheel - Perfeitamente Centralizados nos Setores) */
 .tt-wheel-item {
   position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 82px;
+  width: 104px;
   pointer-events: none;
   z-index: 5;
   font-family: var(--tt-font-family);
@@ -232,85 +232,79 @@
 
 .tt-wheel-item.item-anki {
   top: 50%;
-  left: 20px;
-  transform: translateY(-50%);
+  left: 61px;
+  transform: translate(-50%, -50%);
 }
 
 .tt-wheel-item.item-ia {
   top: 50%;
-  right: 20px;
-  transform: translateY(-50%);
+  left: 259px;
+  transform: translate(-50%, -50%);
 }
 
 .tt-wheel-slice.slice-anki:hover ~ .item-anki {
-  transform: translateY(-50%) scale(1.08);
+  transform: translate(-50%, -50%) scale(1.03);
 }
 
 .tt-wheel-slice.slice-ia:hover ~ .item-ia {
-  transform: translateY(-50%) scale(1.08);
-}
-
-/* Numeric option indicator (1 a 9) */
-.tt-wheel-num-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 17px;
-  height: 17px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 10px;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 2px;
-  line-height: 1;
+  transform: translate(-50%, -50%) scale(1.03);
 }
 
 .tt-wheel-item svg {
   width: 24px;
   height: 24px;
   fill: #ffffff;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
 .tt-wheel-item-title {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 11.5px;
+  font-weight: 700;
   letter-spacing: -0.01em;
   white-space: nowrap;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  margin-bottom: 4px;
 }
 
-.tt-wheel-item-desc {
-  font-size: 9px;
-  font-weight: 400;
-  white-space: nowrap;
-  color: rgba(255, 255, 255, 0.75);
+/* Indicador do número da opção (1 e 2) posicionado embaixo */
+.tt-wheel-key-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: rgba(18, 18, 24, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
 }
 
 /* --------------------------------------------------------------------------
-   Translucent Apple Modal (IA Explanation Window)
+   Translucent AI Explanation Window (Centralizada & Mais Larga)
    -------------------------------------------------------------------------- */
 #tec-tools-ai-modal {
   position: fixed;
-  top: 100px;
-  right: 40px;
-  width: 540px;
-  max-width: calc(100vw - 40px);
-  max-height: 82vh;
+  top: 60px;
+  left: 60px;
+  width: 960px;
+  max-width: calc(100vw - 32px);
+  height: 660px;
+  max-height: calc(100vh - 48px);
   z-index: 1000000;
   background: var(--tt-glass-bg);
   backdrop-filter: blur(36px) saturate(190%);
   -webkit-backdrop-filter: blur(36px) saturate(190%);
   border: 1px solid var(--tt-glass-border);
   border-radius: 20px;
-  box-shadow: var(--tt-glass-shadow);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.12);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -318,76 +312,41 @@
   color: var(--tt-text-primary);
   opacity: 0;
   visibility: hidden;
-  transform: scale(0.92) translateY(12px);
   pointer-events: none;
-  transition: opacity 220ms var(--tt-smooth-easing), transform 240ms var(--tt-spring-easing), visibility 220ms var(--tt-smooth-easing);
+  transition: opacity 200ms var(--tt-smooth-easing), visibility 200ms var(--tt-smooth-easing);
   resize: both;
 }
 
 #tec-tools-ai-modal.tt-visible {
-  opacity: 1;
-  visibility: visible;
-  transform: scale(1) translateY(0);
-  pointer-events: auto;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
-/* macOS Window Titlebar */
+/* Window Titlebar */
 .tt-modal-titlebar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  padding: 12px 18px;
   background: rgba(255, 255, 255, 0.05);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   cursor: grab;
   user-select: none;
+  gap: 12px;
 }
 
 .tt-modal-titlebar:active {
   cursor: grabbing;
 }
 
-/* Traffic Lights */
-.tt-traffic-lights {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.tt-light {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: filter 120ms ease;
-}
-
-.tt-light:hover {
-  filter: brightness(1.15);
-}
-
-.tt-light-close {
-  background: #ff5f57;
-  border: 0.5px solid rgba(0, 0, 0, 0.2);
-}
-
-.tt-light-min {
-  background: #febc2e;
-  border: 0.5px solid rgba(0, 0, 0, 0.2);
-}
-
-.tt-light-max {
-  background: #28c840;
-  border: 0.5px solid rgba(0, 0, 0, 0.2);
-}
-
 .tt-modal-header-info {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
 }
 
 .tt-modal-title {
@@ -395,42 +354,53 @@
   font-weight: 600;
   color: #ffffff;
   letter-spacing: -0.01em;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .tt-modal-badge {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
-  padding: 2px 7px;
+  padding: 4px 12px;
   border-radius: 999px;
-  background: rgba(175, 82, 222, 0.25);
-  color: #d18ff0;
-  border: 1px solid rgba(175, 82, 222, 0.35);
+  background: rgba(175, 82, 222, 0.22);
+  color: #df9bf8;
+  border: 1px solid rgba(175, 82, 222, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 100%;
+  flex: 0 1 auto;
 }
 
 .tt-modal-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .tt-action-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--tt-text-primary);
   border-radius: 8px;
-  padding: 4px 8px;
-  font-size: 11px;
+  padding: 5px 12px;
+  font-size: 12px;
   font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 4px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
   transition: all 140ms ease;
+  white-space: nowrap;
 }
 
 .tt-action-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
 .tt-action-btn:active {
@@ -438,9 +408,38 @@
 }
 
 .tt-action-btn svg {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   fill: currentColor;
+}
+
+/* Close button with 'x' */
+.tt-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  line-height: 1;
+  transition: all 140ms ease;
+  margin-left: 2px;
+}
+
+.tt-close-btn:hover {
+  background: rgba(255, 69, 58, 0.25);
+  border-color: rgba(255, 69, 58, 0.5);
+  color: #ff453a;
+}
+
+.tt-close-btn:active {
+  transform: scale(0.92);
 }
 
 /* Modal Content Body */

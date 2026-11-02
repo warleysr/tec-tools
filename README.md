@@ -19,7 +19,7 @@ Extensão para Mozilla Firefox e Google Chrome projetada especificamente para o 
   - **Frente**: Enunciado completo, cabeçalho (Matéria, Assunto, Banca, Ano, Órgão, ID) e alternativas.
   - **Verso**: Gabarito oficial identificado na resolução e texto correspondente.
 - **Templates 100% Customizáveis**: Configure os campos e o HTML da frente e do verso através das opções da extensão utilizando variáveis:
-  - `{{enunciado}}`, `{{alternativas}}`, `{{gabarito}}`, `{{gabarito_texto}}`, `{{materia}}`, `{{assunto}}`, `{{banca}}`, `{{ano}}`, `{{orgao}}`, `{{id}}`, `{{url}}`.
+  - `{{enunciado}}`, `{{alternativas}}`, `{{gabarito}}`, `{{gabarito_texto}}`, `{{comentario}}`, `{{comentario_forum}}`, `{{materia}}`, `{{assunto}}`, `{{banca}}`, `{{ano}}`, `{{orgao}}`, `{{id}}`, `{{url}}`.
 - Notificação dinâmica em estilo *Dynamic Island* da Apple informando a confirmação do card salvo no baralho configurado.
 
 ### 3. ✨ Explicar com IA (Janela Translúcida macOS)

@@ -23,13 +23,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   const DEFAULT_HOTKEY = {
-    altKey: true,
+    altKey: false,
     ctrlKey: false,
     shiftKey: false,
     metaKey: false,
-    code: 'KeyW',
-    key: 'w',
-    display: 'Alt + W'
+    code: 'KeyA',
+    key: 'a',
+    display: 'A'
   };
 
   let hotkeyConfig = { ...DEFAULT_HOTKEY };
